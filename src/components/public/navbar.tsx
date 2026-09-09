@@ -6,7 +6,6 @@ const navLinks = [
   { label: "About", href: "#about", active: false },
   { label: "Contact", href: "#contact", active: false },
 ]
-// dgjfhjyj
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
