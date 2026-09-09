@@ -1,8 +1,15 @@
+import { BrowserRouter } from 'react-router-dom';
+import AppRoutes from './app/routes/Routes';
+// import { AuthProvider } from './context/AuthContext'; // Agar bo'lsa
 
-const App = () => {
+function App() {
   return (
-    <div>App</div>
-  )
+    // <AuthProvider>
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    // </AuthProvider>
+  );
 }
 
-export default App
+export default App;
