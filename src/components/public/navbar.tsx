@@ -2,9 +2,9 @@ import { useState } from "react"
 import { Leaf, Menu, Search, X } from "lucide-react"
 
 const navLinks = [
-  { label: "Home", href: "#home", active: true },
-  { label: "About", href: "#about", active: false },
-  { label: "Contact", href: "#contact", active: false },
+  { label: "Bosh sahifa", href: "#home", active: true },
+  { label: "Biz haqimizda", href: "#about", active: false },
+  { label: "Aloqa", href: "#contact", active: false },
 ]
 
 const Navbar = () => {
@@ -45,13 +45,13 @@ const Navbar = () => {
               href="/login"
               className="rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-emerald-700 hover:text-emerald-800"
             >
-              Log In
+              Kirish
             </a>
             <a
               href="/signup"
               className="rounded-full bg-emerald-800 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_2px_5px_rgb(6_78_59_/_25%)] transition hover:-translate-y-0.5 hover:bg-emerald-700 hover:shadow-[0_3px_7px_rgb(6_78_59_/_28%)] active:translate-y-0 active:shadow-[0_1px_3px_rgb(6_78_59_/_20%)]"
             >
-              Sign Up
+              Ro&apos;yxatdan o&apos;tish
             </a>
           </div>
         </div>
@@ -88,10 +88,10 @@ const Navbar = () => {
             ))}
             <div className="mt-3 grid grid-cols-2 gap-3 border-t border-slate-200 pt-4">
               <a href="/login" className="rounded-full border border-slate-300 px-4 py-3 text-center text-sm font-semibold text-slate-700 transition hover:border-emerald-700 hover:text-emerald-800">
-                Log In
+                Kirish
               </a>
               <a href="/signup" className="rounded-full bg-emerald-800 px-4 py-3 text-center text-sm font-semibold text-white shadow-[0_2px_5px_rgb(6_78_59_/_25%)] transition active:translate-y-0.5 active:shadow-[0_1px_3px_rgb(6_78_59_/_20%)]">
-                Sign Up
+                Ro&apos;yxatdan o&apos;tish
               </a>
             </div>
           </div>
