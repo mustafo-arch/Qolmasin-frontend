@@ -9,8 +9,9 @@ const App = () => {
           Yaxshi mahsulotlar qolmasin.
         </h1>
       </main>
+      salom
     </div>
   )
 }
-
+// dfasdfjasdkf
 export default App
