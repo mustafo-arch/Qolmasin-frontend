@@ -11,8 +11,8 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-50 bg-transparent px-3 pt-3 sm:px-5">
-      <nav className="mx-auto flex h-16 max-w-[1440px] items-center gap-5 rounded-[2rem] border border-slate-200 bg-white/95 px-5 shadow-[0_8px_24px_rgb(15_23_42_/_8%)] backdrop-blur-xl lg:gap-8 lg:px-8" aria-label="Main navigation">
+    <header className="sticky top-0 z-50 border-t-[3px] border-slate-800/80 bg-transparent px-3 pt-3 sm:px-5">
+      <nav className="glass-panel mx-auto flex h-16 max-w-[1440px] items-center gap-5 rounded-[2rem] px-5 lg:gap-8 lg:px-8" aria-label="Main navigation">
         <a href="#home" className="flex shrink-0 items-center gap-2.5" aria-label="Qolmasin bosh sahifasi">
           <span className="grid size-10 place-items-center rounded-full bg-emerald-800 text-white">
             <Leaf className="size-5" strokeWidth={2.5} />
@@ -29,7 +29,7 @@ const Navbar = () => {
               type="search"
               placeholder="Mahsulot yoki do'kon qidiring"
               aria-label="Qidiruv"
-              className="h-11 w-full rounded-full border border-slate-200 bg-[#f4f8f5] pl-11 pr-5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-600 focus:bg-white focus:ring-4 focus:ring-emerald-600/10"
+              className="glass-control h-11 w-full rounded-full pl-11 pr-5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-600 focus:bg-white/70 focus:ring-4 focus:ring-emerald-600/10"
             />
           </label>
         </form>
@@ -43,7 +43,7 @@ const Navbar = () => {
           <div className="flex items-center gap-2.5 border-l border-slate-200 pl-6">
             <a
               href="/login"
-              className="rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-emerald-700 hover:text-emerald-800"
+              className="glass-control rounded-full px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-emerald-700 hover:text-emerald-800"
             >
               Kirish
             </a>
@@ -68,7 +68,7 @@ const Navbar = () => {
       </nav>
 
       {isMenuOpen && (
-        <div className="mx-3 rounded-[2rem] border border-slate-200 bg-white px-6 pb-5 shadow-[0_8px_24px_rgb(15_23_42_/_8%)] md:hidden">
+        <div className="glass-panel mx-3 rounded-[2rem] px-6 pb-5 md:hidden">
           <form className="pt-4" role="search" onSubmit={(event) => event.preventDefault()}>
             <label className="relative block">
               <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-slate-500" aria-hidden="true" />
@@ -76,7 +76,7 @@ const Navbar = () => {
                 type="search"
                 placeholder="Mahsulot yoki do'kon qidiring"
                 aria-label="Qidiruv"
-                className="h-11 w-full rounded-full border border-slate-200 bg-[#f4f8f5] pl-11 pr-4 text-sm outline-none focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/10"
+                className="glass-control h-11 w-full rounded-full pl-11 pr-4 text-sm outline-none focus:border-emerald-600 focus:bg-white/70 focus:ring-4 focus:ring-emerald-600/10"
               />
             </label>
           </form>

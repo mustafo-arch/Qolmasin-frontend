@@ -7,15 +7,15 @@ const Home = () => {
       <div className="mx-auto max-w-[1500px] px-3 pb-10 pt-0 sm:px-5 lg:px-8">
         <Navbar />
 
-        <main
+          <main
           id="home"
-          className="relative mt-5 overflow-hidden rounded-[2rem] bg-[#f4f5f1] px-5 py-6 shadow-[inset_0_0_0_1px_rgba(15,23,42,0.04)] sm:px-8 lg:px-10 lg:py-10"
+            className="glass-panel relative mt-5 overflow-hidden rounded-[2rem] px-5 py-6 sm:px-8 lg:px-10 lg:py-9 xl:mt-6"
         >
           <div className="hero-dot-grid absolute inset-0 opacity-80" aria-hidden="true" />
 
-          <div className="relative grid gap-6 lg:grid-cols-[1.12fr_0.88fr] lg:items-center lg:gap-8">
-            <section className="py-2 lg:py-6">
-              <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-emerald-800/15 bg-white/80 px-3 py-2 shadow-sm backdrop-blur-sm">
+          <div className="relative grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)] lg:items-center lg:gap-10 xl:grid-cols-[1.05fr_0.95fr] xl:gap-12">
+            <section className="min-w-0 py-2 lg:py-5 xl:py-8">
+              <div className="glass-control mb-7 inline-flex items-center gap-2 rounded-full px-3 py-2 shadow-sm">
                 <span className="flex size-6 items-center justify-center rounded-full bg-emerald-100 text-emerald-800">
                   <Leaf className="size-3.5" strokeWidth={2.2} />
                 </span>
@@ -24,12 +24,12 @@ const Home = () => {
                 </span>
               </div>
 
-              <h1 className="max-w-[760px] text-[clamp(3.1rem,6vw,8.2rem)] font-black leading-[0.92] tracking-[-0.08em] text-slate-900">
+              <h1 className="max-w-[680px] text-[clamp(3.1rem,5.2vw,6.6rem)] font-black leading-[0.94] tracking-[-0.07em] text-slate-900">
                 Yaxshi mahsulot
                 <span className="block text-emerald-800">isrof bo&apos;lmasin.</span>
               </h1>
 
-              <p className="mt-6 max-w-[690px] text-[clamp(1.08rem,2vw,1.7rem)] leading-[1.4] text-slate-600 lg:mt-8">
+              <p className="mt-6 max-w-[600px] text-[clamp(1.08rem,1.45vw,1.35rem)] leading-[1.45] text-slate-600 lg:mt-7">
                 Yaqinishingizdagi nonvoyxona, do&apos;kon va kafelardagi sifatli mahsulotlarni 70% gacha arzonroq toping.
               </p>
 
@@ -44,7 +44,7 @@ const Home = () => {
 
                 <button
                   type="button"
-                  className="inline-flex w-full items-center justify-center rounded-xl border border-slate-300 bg-white/80 px-6 py-4 text-base font-semibold text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-white sm:w-auto"
+                  className="glass-control inline-flex w-full items-center justify-center rounded-xl px-6 py-4 text-base font-semibold text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-white/70 sm:w-auto"
                 >
                   Qanday ishlaydi?
                 </button>
@@ -66,25 +66,25 @@ const Home = () => {
               </div>
             </section>
 
-            <section className="grid gap-5 lg:justify-end lg:pt-3">
-              <div className="overflow-hidden rounded-[2rem] border border-slate-200/80 bg-[#dfe2d4] shadow-[0_24px_36px_rgba(15,23,42,0.08)]">
+            <section className="grid min-w-0 gap-5 lg:justify-end lg:pt-2">
+              <div className="glass-panel overflow-hidden rounded-[2rem] bg-[#dfe2d4]/70">
                 <img
                   src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1200&q=80"
                   alt="Bread and pastry product"
-                  className="h-[280px] w-full object-cover object-center sm:h-[330px] lg:h-[420px]"
+                  className="h-[280px] w-full object-cover object-center sm:h-[330px] lg:h-[360px] xl:h-[410px]"
                 />
               </div>
 
               <div className="grid gap-5 sm:grid-cols-[1.1fr_0.9fr]">
-                <div className="overflow-hidden rounded-[2rem] border border-slate-200/80 bg-[#f8f5ee] shadow-[0_18px_30px_rgba(15,23,42,0.06)]">
+                <div className="glass-panel overflow-hidden rounded-[2rem] bg-[#f8f5ee]/70">
                   <img
                     src="https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=1200&q=80"
                     alt="Fresh pastry meal"
-                    className="h-[220px] w-full object-cover object-center sm:h-[240px] lg:h-[250px]"
+                    className="h-[210px] w-full object-cover object-center sm:h-[230px] lg:h-[220px] xl:h-[250px]"
                   />
                 </div>
 
-                <div className="flex min-h-[220px] flex-col justify-between rounded-[2rem] bg-[#0c6f56] p-5 text-white shadow-[0_20px_28px_rgba(12,111,86,0.35)] sm:p-6 lg:min-h-[250px]">
+                <div className="flex min-h-[210px] flex-col justify-between rounded-[2rem] bg-[#0c6f56] p-5 text-white shadow-[0_20px_28px_rgba(12,111,86,0.35)] sm:p-6 lg:min-h-[220px] xl:min-h-[250px]">
                   <div className="flex items-center justify-between">
                     <span className="flex size-14 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm">
                       <ShoppingBag className="size-7" strokeWidth={2.4} />
@@ -93,7 +93,7 @@ const Home = () => {
                   </div>
 
                   <div>
-                    <div className="text-[clamp(3.2rem,5vw,6rem)] font-black tracking-[-0.08em] leading-none">-70%</div>
+                    <div className="text-[clamp(3.2rem,4.5vw,5rem)] font-black tracking-[-0.07em] leading-none">-70%</div>
                     <p className="mt-2 text-base text-emerald-50/90">gacha foydali narxlar</p>
                   </div>
 
