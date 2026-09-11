@@ -5,6 +5,8 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-[#f7f5f0] text-slate-900">
 
+      <div className="mx-auto max-w-[1500px] px-3 pb-10 pt-0 sm:px-5 lg:px-8">
+
           <main
           id="home"
             className="glass-panel relative mt-5 overflow-hidden rounded-[2rem] px-5 py-6 sm:px-8 lg:px-10 lg:py-9 xl:mt-6"
@@ -108,6 +110,7 @@ const Home = () => {
             </section>
           </div>
         </main>
+      </div>
       </div>
   )
 }
