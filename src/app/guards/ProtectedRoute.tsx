@@ -1,35 +1,29 @@
-// src/guards/ProtectedRoute.tsx
+// src/components/auth/ProtectedRoute.tsx
+
+import { Loader } from '@/components/Loader/Loader';
 import { useAuthStore } from '@/features/auth/store';
-import React from 'react';
-import { Navigate, Outlet } from 'react-router-dom'; // <--- Outlet ni import qiling
+import React, { useEffect } from 'react';
+import { Navigate, Outlet } from 'react-router-dom';
 
-interface ProtectedRouteProps {
-  children?: React.ReactNode; // <--- '?' belgisini qo'shing
-}
+export const ProtectedRoute: React.FC = () => {
+  const { isAuthenticated, isLoading, checkAuth, user, accessToken } = useAuthStore();
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { isAuthenticated, isLoading, checkAuth } = useAuthStore();
-
-  React.useEffect(() => {
-    if (!isAuthenticated && !isLoading) {
+  useEffect(() => {
+    // Faqatgina agar auth holati noma'lum bo'lsa va loading bo'lmasa tekshiramiz
+    if (!isAuthenticated && !isLoading && !user && !accessToken) {
       checkAuth();
     }
-  }, [isAuthenticated, isLoading, checkAuth]);
+  }, [isAuthenticated, isLoading, user, accessToken, checkAuth]);
 
+  // Token kelishi kutilayotganda ekranda loader turadi
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600"></div>
-      </div>
-    );
+    return <Loader />;
   }
 
+  // Auth tekshiruvidan o'tmagan bo'lsa login sahifasiga otadi
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
-  // Agar children berilgan bo'lsa uni, bo'lmasa Outlet orqali router bolalarini chiqaramiz
-  return children ? <>{children}</> : <Outlet />;
+  return <Outlet />;
 };
-
-export default ProtectedRoute;

@@ -3,9 +3,9 @@ import Sidebar from '@/components/Sidebar/Sidebar';
 import RoleGuard from '../guards/RoleGuard';
 import { LoginForm } from '@/features/auth/Pages/Login';
 import { UserRole } from '@/features/auth/types';
-import ProtectedRoute from '../guards/ProtectedRoute';
 import { RegisterForm } from '@/features/auth/Pages/Register';
 import Dashboard from '@/pages/public/Dashboard';
+import { ProtectedRoute } from '../guards/ProtectedRoute';
 
 // =====================================================================
 // ⚠️ VAQTINCHA PLACEHOLDER

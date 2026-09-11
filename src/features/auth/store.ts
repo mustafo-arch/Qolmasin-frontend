@@ -2,7 +2,7 @@
 
 import { create } from 'zustand';
 import type { AuthState, LoginDto, RegisterDto } from './types';
-import { authEndpoints, authApi } from './api'; // authApi ni import qilamiz
+import { authEndpoints } from './api'; 
 
 interface AuthActions {
   login: (credentials: LoginDto) => Promise<void>;
@@ -60,7 +60,6 @@ export const useAuthStore = create<AuthStore>()((set, get) => ({
     }
   },
 
-  // YANGI LOGIKA: Token kelgunicha kutish va "Path hack" ishlatish
   checkAuth: async () => {
     const state = get();
     
@@ -89,7 +88,11 @@ export const useAuthStore = create<AuthStore>()((set, get) => ({
       } catch (axiosError) {
         // Agar axios ishlamasa (cookie yuborilmagani uchun), to'g'ridan-to'g'ri fetch ishlatamiz
         console.warn('Axios refresh failed, trying direct fetch to correct path...');
-        const directRes = await fetch('/api/v1/auth/refresh', {
+        
+        // MUHIM: API_BASE_URL ni to'g'ri ishlatish kerak!
+        const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
+        
+        const directRes = await fetch(`${API_BASE_URL}/auth/refresh`, {
           method: 'POST',
           credentials: 'include', // Cookie ni majburan yuborish
           headers: { 'Content-Type': 'application/json' }
