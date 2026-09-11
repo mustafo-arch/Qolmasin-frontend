@@ -6,6 +6,7 @@ import { UserRole } from '@/features/auth/types';
 import ProtectedRoute from '../guards/ProtectedRoute';
 import { RegisterForm } from '@/features/auth/Pages/Register';
 import Dashboard from '@/pages/public/Dashboard';
+import About from '@/pages/public/about/About';
 
 // =====================================================================
 // ⚠️ VAQTINCHA PLACEHOLDER
@@ -38,7 +39,8 @@ const AppRoutes = () => {
       {/* 🌍 PUBLIC ROUTES                                             */}
       {/* ============================================================ */}
       <Route path="/" element={<Dashboard />} />
-      <Route path="/about" element={<Placeholder name="About Us" />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/batafsil" element={<About />} />
       
       <Route path="/login" element={<LoginForm />} />
       <Route path="/register" element={<RegisterForm />} />

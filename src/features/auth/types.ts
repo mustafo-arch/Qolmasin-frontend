@@ -1,19 +1,23 @@
 // src/types/auth.ts
 
-export enum UserRole {
-  CUSTOMER = 'CUSTOMER',
-  BUSINESS_OWNER = 'BUSINESS_OWNER',
-  BUSINESS_STAFF = 'BUSINESS_STAFF',
-  MODERATOR = 'MODERATOR',
-  ADMIN = 'ADMIN',
-  SUPER_ADMIN = 'SUPER_ADMIN',
-}
+export const UserRole = {
+  CUSTOMER: 'CUSTOMER',
+  BUSINESS_OWNER: 'BUSINESS_OWNER',
+  BUSINESS_STAFF: 'BUSINESS_STAFF',
+  MODERATOR: 'MODERATOR',
+  ADMIN: 'ADMIN',
+  SUPER_ADMIN: 'SUPER_ADMIN',
+} as const
 
-export enum UserStatus {
-  ACTIVE = 'ACTIVE',
-  SUSPENDED = 'SUSPENDED',
-  DEACTIVATED = 'DEACTIVATED',
-}
+export type UserRole = (typeof UserRole)[keyof typeof UserRole]
+
+export const UserStatus = {
+  ACTIVE: 'ACTIVE',
+  SUSPENDED: 'SUSPENDED',
+  DEACTIVATED: 'DEACTIVATED',
+} as const
+
+export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus]
 
 export interface PublicUser {
   id: string;

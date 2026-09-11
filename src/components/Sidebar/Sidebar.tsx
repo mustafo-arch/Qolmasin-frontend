@@ -41,9 +41,12 @@ const Sidebar = () => {
   let currentMenu = menuConfig.CUSTOMER;
   
   if (user?.role) {
-    if ([UserRole.BUSINESS_OWNER, UserRole.BUSINESS_STAFF].includes(user.role)) {
+    const businessRoles: UserRole[] = [UserRole.BUSINESS_OWNER, UserRole.BUSINESS_STAFF];
+    const adminRoles: UserRole[] = [UserRole.MODERATOR, UserRole.ADMIN, UserRole.SUPER_ADMIN];
+
+    if (businessRoles.includes(user.role)) {
       currentMenu = menuConfig.BUSINESS;
-    } else if ([UserRole.MODERATOR, UserRole.ADMIN, UserRole.SUPER_ADMIN].includes(user.role)) {
+    } else if (adminRoles.includes(user.role)) {
       currentMenu = menuConfig.ADMIN;
     }
   }

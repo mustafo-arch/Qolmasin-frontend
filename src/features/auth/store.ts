@@ -2,7 +2,7 @@
 
 import { create } from 'zustand';
 import type { AuthState, LoginDto, RegisterDto } from './types';
-import { authEndpoints, authApi } from './api'; // authApi ni import qilamiz
+import { authEndpoints } from './api';
 
 interface AuthActions {
   login: (credentials: LoginDto) => Promise<void>;
