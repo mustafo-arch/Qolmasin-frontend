@@ -1,9 +1,8 @@
 // src/store/authStore.ts
 
 import { create } from 'zustand';
-// import { persist } from 'zustand/middleware'; // <--- OLIB TASHLANDI
 import type { AuthState, LoginDto, RegisterDto } from './types';
-import { authEndpoints } from './api';
+import { authEndpoints, authApi } from './api'; // authApi ni import qilamiz
 
 interface AuthActions {
   login: (credentials: LoginDto) => Promise<void>;
@@ -16,165 +15,106 @@ interface AuthActions {
 
 type AuthStore = AuthState & AuthActions;
 
-// persist o'rniga oddiy create ishlatiladi
 export const useAuthStore = create<AuthStore>()((set, get) => ({
-  // Initial state
   user: null,
   accessToken: null,
   isAuthenticated: false,
   isLoading: false,
   error: null,
 
-  // Actions
   login: async (credentials: LoginDto) => {
     set({ isLoading: true, error: null });
-    
     try {
       const response = await authEndpoints.login(credentials);
       const { accessToken, user } = response.data;
-      
-      set({
-        user,
-        accessToken,
-        isAuthenticated: true,
-        isLoading: false,
-        error: null,
-      });
+      set({ user, accessToken, isAuthenticated: true, isLoading: false, error: null });
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 'Login failed';
-      set({
-        isLoading: false,
-        error: errorMessage,
-      });
+      set({ isLoading: false, error: error.response?.data?.message || 'Login failed' });
       throw error;
     }
   },
 
   register: async (userData: RegisterDto) => {
     set({ isLoading: true, error: null });
-    
     try {
       const response = await authEndpoints.register(userData);
       const { accessToken, user } = response.data;
-      
-      set({
-        user,
-        accessToken,
-        isAuthenticated: true,
-        isLoading: false,
-        error: null,
-      });
+      set({ user, accessToken, isAuthenticated: true, isLoading: false, error: null });
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 'Registration failed';
-      set({
-        isLoading: false,
-        error: errorMessage,
-      });
+      set({ isLoading: false, error: error.response?.data?.message || 'Registration failed' });
       throw error;
     }
   },
 
   logout: async () => {
-    try {
-      await authEndpoints.logout();
-    } catch (error) {
-      console.error('Logout error:', error);
-    } finally {
-      set({
-        user: null,
-        accessToken: null,
-        isAuthenticated: false,
-        error: null,
-      });
+    try { await authEndpoints.logout(); } catch (e) { console.error(e); }
+    finally {
+      set({ user: null, accessToken: null, isAuthenticated: false, error: null });
     }
   },
 
   logoutAll: async () => {
-    try {
-      await authEndpoints.logoutAll();
-    } catch (error) {
-      console.error('Logout all error:', error);
-    } finally {
-      set({
-        user: null,
-        accessToken: null,
-        isAuthenticated: false,
-        error: null,
-      });
+    try { await authEndpoints.logoutAll(); } catch (e) { console.error(e); }
+    finally {
+      set({ user: null, accessToken: null, isAuthenticated: false, error: null });
     }
   },
 
+  // YANGI LOGIKA: Token kelgunicha kutish va "Path hack" ishlatish
   checkAuth: async () => {
-    const { accessToken } = get();
+    const state = get();
     
-    // Agar token yo'q bo'lsa, refresh cookie orqali yangilashga urinamiz
-    if (!accessToken) {
-      try {
-        const response = await authEndpoints.refresh();
-        const newAccessToken = response.data.accessToken;
-        
-        set({ accessToken: newAccessToken });
-        
-        const userResponse = await authEndpoints.getCurrentUser();
-        set({
-          user: userResponse.data,
-          isAuthenticated: true,
-          isLoading: false,
-          error: null,
-        });
-        return;
-      } catch {
-        set({
-          user: null,
-          accessToken: null,
-          isAuthenticated: false,
-          isLoading: false,
-          error: null,
-        });
-        return;
-      }
-    }
+    // Agar allaqachon tekshirilayotgan bo'lsa yoki user mavjud bo'lsa, qayta urinmaymiz
+    if (state.isLoading || (state.isAuthenticated && state.user)) return;
 
-    // Token mavjud bo'lsa validate qilamiz
     set({ isLoading: true });
-    
+
     try {
-      const response = await authEndpoints.getCurrentUser();
-      set({
-        user: response.data,
-        accessToken,
-        isAuthenticated: true,
-        isLoading: false,
-        error: null,
-      });
-    } catch (error) {
-      // Token invalid bo'lsa refresh qilishga urinamiz
-      try {
-        const refreshResponse = await authEndpoints.refresh();
-        const newAccessToken = refreshResponse.data.accessToken;
-        
-        set({ accessToken: newAccessToken });
-        
-        const userResponse = await authEndpoints.getCurrentUser();
-        set({
-          user: userResponse.data,
-          isAuthenticated: true,
-          isLoading: false,
-          error: null,
-        });
-      } catch {
-        set({
-          user: null,
-          accessToken: null,
-          isAuthenticated: false,
-          isLoading: false,
-          error: null,
-        });
+      // 1. Avval memory dagi token bilan urinish
+      if (state.accessToken) {
+        const response = await authEndpoints.getCurrentUser();
+        set({ user: response.data, isAuthenticated: true, isLoading: false });
+        return;
       }
+
+      // 2. Token yo'q bo'lsa, refresh qilishga urinamiz
+      // Backend cookie path i noto'g'ri bo'lgani uchun, biz to'g'ridan-to'g'ri 
+      // /api/v1/auth/refresh manziliga fetch yuboramiz. Bu brauzerni cookieni yuborishga majbur qiladi.
+      let newAccessToken: string | undefined;
+      
+      try {
+        // Axios interceptor orqali urinib ko'ramiz
+        const res = await authEndpoints.refresh();
+        newAccessToken = res.data.accessToken;
+      } catch (axiosError) {
+        // Agar axios ishlamasa (cookie yuborilmagani uchun), to'g'ridan-to'g'ri fetch ishlatamiz
+        console.warn('Axios refresh failed, trying direct fetch to correct path...');
+        const directRes = await fetch('/api/v1/auth/refresh', {
+          method: 'POST',
+          credentials: 'include', // Cookie ni majburan yuborish
+          headers: { 'Content-Type': 'application/json' }
+        });
+        
+        if (!directRes.ok) throw new Error('Direct refresh also failed');
+        const data = await directRes.json();
+        newAccessToken = data.accessToken;
+      }
+
+      // Yangi tokenni store ga saqlaymiz
+      if (newAccessToken) {
+        set({ accessToken: newAccessToken });
+        const userResponse = await authEndpoints.getCurrentUser();
+        set({ user: userResponse.data, isAuthenticated: true, isLoading: false });
+      } else {
+        throw new Error('No token received');
+      }
+
+    } catch (error) {
+      // Hammasi ishlamasa, logout holatiga o'tkazish
+      console.warn('Auth check failed completely');
+      set({ user: null, accessToken: null, isAuthenticated: false, isLoading: false });
     }
   },
 
-  clearError: () => {
-    set({ error: null });
-  },
+  clearError: () => set({ error: null }),
 }));
