@@ -14,14 +14,14 @@ const Navbar = () => {
   return (
     <header className="sticky top-0 z-50 bg-transparent px-3 pt-3 sm:px-5">
       <nav className="mx-auto flex h-16 max-w-[1440px] items-center gap-5 rounded-[2rem] border border-slate-200 bg-white/95 px-5 shadow-[0_8px_24px_rgb(15_23_42_/_8%)] backdrop-blur-xl lg:gap-8 lg:px-8" aria-label="Main navigation">
-        <a href="#home" className="flex shrink-0 items-center gap-2.5" aria-label="Qolmasin bosh sahifasi">
+        <Link to="/" className="flex shrink-0 items-center gap-2.5" aria-label="Qolmasin bosh sahifasi">
           <span className="grid size-10 place-items-center rounded-full bg-emerald-800 text-white">
             <Leaf className="size-5" strokeWidth={2.5} />
           </span>
           <span className="text-[21px] font-bold tracking-tight text-emerald-800">
             Qol<span className="text-orange-500">masin</span>
           </span>
-        </a>
+        </Link>
 
         <form className="hidden min-w-0 flex-1 md:block" role="search" onSubmit={(event) => event.preventDefault()}>
           <label className="relative block max-w-[500px]">
