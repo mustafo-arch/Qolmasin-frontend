@@ -1,10 +1,11 @@
 import Navbar from '@/components/public/navbar'
-import React from 'react'
+import Home from './home/Home'
 
 const Dashboard = () => {
   return (
     <div>
         <Navbar/>
+        <Home/>
     </div>
   )
 }

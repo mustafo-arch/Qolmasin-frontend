@@ -3,9 +3,9 @@ import { Leaf, Menu, Search, X } from "lucide-react"
 import { Link } from "react-router-dom"
 
 const navLinks = [
-  { label: "Home", href: "#home", active: true },
-  { label: "About", href: "#about", active: false },
-  { label: "Contact", href: "#contact", active: false },
+  { label: "Bosh sahifa", href: "#home", active: true },
+  { label: "Biz haqimizda", href: "#about", active: false },
+  { label: "Aloqa", href: "#contact", active: false },
 ]
 
 const Navbar = () => {
@@ -54,6 +54,7 @@ const Navbar = () => {
             >
               Sign Up
             </Link>
+
           </div>
         </div>
 
@@ -91,9 +92,10 @@ const Navbar = () => {
               <Link to="/login" className="rounded-full border border-slate-300 px-4 py-3 text-center text-sm font-semibold text-slate-700 transition hover:border-emerald-700 hover:text-emerald-800">
                 Log In
               </Link>
-              <Link to='/register'  className="rounded-full bg-emerald-800 px-4 py-3 text-center text-sm font-semibold text-white shadow-[0_2px_5px_rgb(6_78_59_/_25%)] transition active:translate-y-0.5 active:shadow-[0_1px_3px_rgb(6_78_59_/_20%)]">
+              <Link to='/register' className="rounded-full bg-emerald-800 px-4 py-3 text-center text-sm font-semibold text-white shadow-[0_2px_5px_rgb(6_78_59_/_25%)] transition active:translate-y-0.5 active:shadow-[0_1px_3px_rgb(6_78_59_/_20%)]">
                 Sign Up
               </Link>
+
             </div>
           </div>
         </div>

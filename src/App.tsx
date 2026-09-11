@@ -4,13 +4,16 @@ import AppRoutes from './app/routes/Routes';
 
 function App() {
   return (
-    // <AuthProvider>
+    <>
+    <div className='bg-[#f7f5f0]'>
     <BrowserRouter>
       <AppRoutes />
     </BrowserRouter>
-    // </AuthProvider>
+    </div>
+    </>
   );
 }
 
 export default App;
+
 
