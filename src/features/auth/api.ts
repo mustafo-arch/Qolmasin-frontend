@@ -13,7 +13,7 @@ import type {
 } from './types';
 import { useAuthStore } from './store';
 
-const API_BASE_URL = 'http://localhost:3000/api/v1';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
 
 export const authApi = axios.create({
   baseURL: `${API_BASE_URL}/auth`,
@@ -26,6 +26,8 @@ export const authApi = axios.create({
 // Request interceptor - access token Zustand store'dan olinadi
 authApi.interceptors.request.use(
   (config) => {
+    // Agar bu refresh yoki logout so'rovi bo'lsa, token qo'shmaslik kerak (ba'zan)
+    // Lekin asosan accessToken kerak
     const accessToken = useAuthStore.getState().accessToken;
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
@@ -41,11 +43,21 @@ authApi.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    // MUHIM: Agar so'rov /refresh yoki /logout bo'lsa va 401 kelsa, 
+    // yana refresh qilishga urinmaymiz (loop oldini olish uchun)
+    if (
+      error.response?.status === 401 && 
+      !originalRequest._retry && 
+      !originalRequest.url?.includes('/refresh') &&
+      !originalRequest.url?.includes('/logout')
+    ) {
       originalRequest._retry = true;
       
       try {
         // Refresh token orqali yangi access token olish
+        // Bu yerda authApi.post ishlatamiz, lekin u yana interceptorga tushmasligi uchun
+        // alohida axios instance yoki flag ishlatish mumkin. 
+        // Hozircha oddiy usul bilan ketamiz, chunki /refresh 401 bermasligi kerak.
         const response = await authApi.post('/refresh');
         const { accessToken } = response.data;
         
@@ -57,7 +69,8 @@ authApi.interceptors.response.use(
         return authApi(originalRequest);
       } catch (refreshError) {
         // Refresh ham ishlamasa, logout qilish
-        useAuthStore.getState().logout();
+        // Lekin logout so'rovini yubormasdan turib state ni tozalaymiz
+        useAuthStore.getState().logout(false); // false = serverga so'rov yuborma
         window.location.href = '/login';
         return Promise.reject(refreshError);
       }
@@ -74,8 +87,9 @@ export const authEndpoints = {
   login: (data: LoginDto) => 
     authApi.post<AuthResult>('/login', data),
   
-  logout: () => 
-    authApi.post('/logout'),
+  // logoutNow parametri qo'shildi: agar false bo'lsa, serverga so'rov yuborilmaydi
+  logout: (sendRequest = true) => 
+    sendRequest ? authApi.post('/logout') : Promise.resolve(),
   
   logoutAll: () => 
     authApi.post('/logout-all'),

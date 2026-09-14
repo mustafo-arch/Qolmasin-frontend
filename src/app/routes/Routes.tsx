@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
-import Navbar from '@/components/Sidebar/Navbar';
+import Navbar from '@/components/private/Navbar';
 import RoleGuard from '../guards/RoleGuard';
 import { LoginForm } from '@/features/auth/Pages/Login';
 import { UserRole } from '@/features/auth/types';

@@ -2,12 +2,12 @@
 
 import { create } from 'zustand';
 import type { AuthState, LoginDto, RegisterDto } from './types';
-import { authEndpoints } from './api';
+import { authEndpoints } from './api'; 
 
 interface AuthActions {
   login: (credentials: LoginDto) => Promise<void>;
   register: (userData: RegisterDto) => Promise<void>;
-  logout: () => Promise<void>;
+  logout: (sendRequest?: boolean) => Promise<void>; // Parametr qo'shildi
   logoutAll: () => Promise<void>;
   checkAuth: () => Promise<void>;
   clearError: () => void;
@@ -46,11 +46,12 @@ export const useAuthStore = create<AuthStore>()((set, get) => ({
     }
   },
 
-  logout: async () => {
-    try { await authEndpoints.logout(); } catch (e) { console.error(e); }
-    finally {
-      set({ user: null, accessToken: null, isAuthenticated: false, error: null });
+  // logout funksiyasi endi serverga so'rov yuborishni majburiy qilmaydi
+  logout: async (sendRequest = true) => {
+    if (sendRequest) {
+      try { await authEndpoints.logout(true); } catch (e) { console.error(e); }
     }
+    set({ user: null, accessToken: null, isAuthenticated: false, error: null });
   },
 
   logoutAll: async () => {
@@ -77,8 +78,6 @@ export const useAuthStore = create<AuthStore>()((set, get) => ({
       }
 
       // 2. Token yo'q bo'lsa, refresh qilishga urinamiz
-      // Backend cookie path i noto'g'ri bo'lgani uchun, biz to'g'ridan-to'g'ri 
-      // /api/v1/auth/refresh manziliga fetch yuboramiz. Bu brauzerni cookieni yuborishga majbur qiladi.
       let newAccessToken: string | undefined;
       
       try {
@@ -86,24 +85,23 @@ export const useAuthStore = create<AuthStore>()((set, get) => ({
         const res = await authEndpoints.refresh();
         newAccessToken = res.data.accessToken;
       } catch (axiosError) {
-        // Agar axios ishlamasa (cookie yuborilmagani uchun), to'g'ridan-to'g'ri fetch ishlatamiz
-        console.warn('Axios refresh failed, trying direct fetch to correct path...');
+        // Agar axios ishlamasa, to'g'ridan-to'g'ri fetch ishlatamiz
+        console.warn('Axios refresh failed, trying direct fetch...');
         
-        // MUHIM: API_BASE_URL ni to'g'ri ishlatish kerak!
         const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
         
+        // MUHIM: Cookie path muammosini hal qilish uchun to'g'ri URL ga fetch
         const directRes = await fetch(`${API_BASE_URL}/auth/refresh`, {
           method: 'POST',
-          credentials: 'include', // Cookie ni majburan yuborish
+          credentials: 'include',
           headers: { 'Content-Type': 'application/json' }
         });
         
-        if (!directRes.ok) throw new Error('Direct refresh also failed');
+        if (!directRes.ok) throw new Error('Direct refresh failed');
         const data = await directRes.json();
         newAccessToken = data.accessToken;
       }
 
-      // Yangi tokenni store ga saqlaymiz
       if (newAccessToken) {
         set({ accessToken: newAccessToken });
         const userResponse = await authEndpoints.getCurrentUser();
@@ -113,7 +111,6 @@ export const useAuthStore = create<AuthStore>()((set, get) => ({
       }
 
     } catch (error) {
-      // Hammasi ishlamasa, logout holatiga o'tkazish
       console.warn('Auth check failed completely');
       set({ user: null, accessToken: null, isAuthenticated: false, isLoading: false });
     }
