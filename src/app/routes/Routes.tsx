@@ -7,6 +7,7 @@ import { RegisterForm } from '@/features/auth/Pages/Register';
 import Dashboard from '@/pages/public/Dashboard';
 import { ProtectedRoute } from '../guards/ProtectedRoute';
 import About from '@/pages/public/about/About';
+import Contact from '@/pages/public/contact/Contact';
 
 // =====================================================================
 // ⚠️ VAQTINCHA PLACEHOLDER
@@ -41,6 +42,7 @@ const AppRoutes = () => {
       <Route path="/" element={<Dashboard />} />
       <Route path="/about" element={<About />} />
       <Route path="/batafsil" element={<About />} />
+      <Route path="/boglanish" element={<Contact />} />
       
       <Route path="/login" element={<LoginForm />} />
       <Route path="/register" element={<RegisterForm />} />

@@ -1,16 +1,17 @@
 
 import { useState } from "react"
 import { Leaf, Menu, Search, X } from "lucide-react"
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 
 const navLinks = [
-  { label: "Bosh sahifa", href: "/", active: true },
-  { label: "Batafsil", href: "/batafsil", active: false },
-  { label: "Qanday ishlaydi?", href: "/batafsil#qanday-ishlaydi", active: false },
+  { label: "Bosh sahifa", href: "/" },
+  { label: "Batafsil", href: "/batafsil" },
+  { label: "Bog'lanish", href: "/boglanish" },
 ]
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { pathname } = useLocation()
 
   return (
     <header className="sticky top-0 z-50 border-t-[3px] border-slate-800/80 bg-transparent px-3 pt-3 sm:px-5">
@@ -62,9 +63,10 @@ const Navbar = () => {
               <Link
                 key={link.label}
                 to={link.href}
-                className={`whitespace-nowrap px-1 text-sm font-medium transition-colors hover:text-emerald-700 ${
-                  link.active
-                    ? "font-semibold text-emerald-800"
+                aria-current={pathname === link.href ? "page" : undefined}
+                className={`whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium transition-colors hover:bg-emerald-50 hover:text-emerald-700 ${
+                  pathname === link.href
+                    ? "bg-emerald-50 font-semibold text-emerald-800"
                     : "text-slate-500"
                 }`}
               >
@@ -136,12 +138,17 @@ const Navbar = () => {
                 key={link.label}
                 to={link.href}
                 onClick={() => setIsMenuOpen(false)}
-                className="rounded-lg px-3 py-3 text-sm font-medium text-slate-600 hover:bg-emerald-50 hover:text-emerald-700"
+                aria-current={pathname === link.href ? "page" : undefined}
+                className={`rounded-lg px-3 py-3 text-sm font-medium transition-colors hover:bg-emerald-50 hover:text-emerald-700 ${
+                  pathname === link.href
+                    ? "bg-emerald-50 font-semibold text-emerald-800"
+                    : "text-slate-600"
+                }`}
               >
                 {link.label}
               </Link>
             ))}
-
+            {/* qotoq */}
             <div className="mt-3 grid grid-cols-2 gap-3 border-t border-slate-200 pt-4">
               <Link
                 to="/login"
