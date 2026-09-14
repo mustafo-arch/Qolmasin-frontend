@@ -1,11 +1,12 @@
 import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
-import Sidebar from '@/components/Sidebar/Sidebar';
+import Navbar from '@/components/Sidebar/Navbar';
 import RoleGuard from '../guards/RoleGuard';
 import { LoginForm } from '@/features/auth/Pages/Login';
 import { UserRole } from '@/features/auth/types';
 import { RegisterForm } from '@/features/auth/Pages/Register';
 import Dashboard from '@/pages/public/Dashboard';
 import { ProtectedRoute } from '../guards/ProtectedRoute';
+import About from '@/pages/public/about/About';
 
 // =====================================================================
 // ⚠️ VAQTINCHA PLACEHOLDER
@@ -19,11 +20,11 @@ const Placeholder = ({ name }: { name: string }) => (
 );
 
 // =====================================================================
-// 🔒 PRIVATE LAYOUT (Sidebar + Content)
+// 🔒 PRIVATE LAYOUT (Navbar + Content)
 // =====================================================================
 const AppLayout = () => (
-  <div className="flex h-screen overflow-hidden bg-gray-50 dark:bg-gray-900">
-    <Sidebar />
+  <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
+    <Navbar />
     <main className="flex-1 overflow-y-auto p-4 md:p-6 relative">
       {/* Ichki routelar shu yerda chiqadi */}
       <Outlet />
@@ -38,7 +39,8 @@ const AppRoutes = () => {
       {/* 🌍 PUBLIC ROUTES                                             */}
       {/* ============================================================ */}
       <Route path="/" element={<Dashboard />} />
-      <Route path="/about" element={<Placeholder name="About Us" />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/batafsil" element={<About />} />
       
       <Route path="/login" element={<LoginForm />} />
       <Route path="/register" element={<RegisterForm />} />
@@ -52,13 +54,13 @@ const AppRoutes = () => {
       <Route path="/offers/:id" element={<Placeholder name="Offer Details" />} />
 
       {/* ============================================================ */}
-      {/*  PRIVATE ROUTES (/app prefix ostida)                       */}
+      {/*  PRIVATE ROUTES (/app prefix ostida)                        */}
       {/* ============================================================ */}
       
       {/* 1-qadam: Himoya qatlami (Token borligini tekshiradi) */}
       <Route element={<ProtectedRoute />}> 
         
-        {/* 2-qadam: Layout qatlami (Sidebar ko'rsatadi) */}
+        {/* 2-qadam: Layout qatlami (Navbar ko'rsatadi) */}
         <Route path="/app" element={<AppLayout />}>
           
           {/* /app ga kirganda avtomatik dashboardga otish */}

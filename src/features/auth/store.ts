@@ -2,7 +2,7 @@
 
 import { create } from 'zustand';
 import type { AuthState, LoginDto, RegisterDto } from './types';
-import { authEndpoints } from './api'; 
+import { authEndpoints } from './api';
 
 interface AuthActions {
   login: (credentials: LoginDto) => Promise<void>;

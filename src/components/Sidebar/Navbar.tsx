@@ -1,4 +1,4 @@
-// src/components/layout/Sidebar.tsx
+// src/components/layout/Navbar.tsx
 
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -57,7 +57,7 @@ const menuConfig = {
   ],
 };
 
-export const Sidebar: React.FC = () => {
+export const Navbar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout, isLoading } = useAuthStore();
@@ -66,9 +66,12 @@ export const Sidebar: React.FC = () => {
   let currentMenu = menuConfig.CUSTOMER;
 
   if (user?.role) {
-    if ([UserRole.BUSINESS_OWNER, UserRole.BUSINESS_STAFF].includes(user.role)) {
+    const businessRoles: UserRole[] = [UserRole.BUSINESS_OWNER, UserRole.BUSINESS_STAFF];
+    const adminRoles: UserRole[] = [UserRole.MODERATOR, UserRole.ADMIN, UserRole.SUPER_ADMIN];
+
+    if (businessRoles.includes(user.role)) {
       currentMenu = menuConfig.BUSINESS;
-    } else if ([UserRole.MODERATOR, UserRole.ADMIN, UserRole.SUPER_ADMIN].includes(user.role)) {
+    } else if (adminRoles.includes(user.role)) {
       currentMenu = menuConfig.ADMIN;
     }
   }
@@ -81,32 +84,75 @@ export const Sidebar: React.FC = () => {
 
   return (
     <>
-      <aside className="w-64 bg-white dark:bg-gray-900 border-r border-emerald-100/60 dark:border-gray-800 flex flex-col h-full shadow-sm select-none transition-colors duration-200">
-        <div className="h-16 flex items-center justify-between px-6 border-b border-emerald-50 dark:border-gray-800">
-          <Link to="/" className="flex items-center gap-1">
-            <span className="text-2xl font-black text-emerald-900 dark:text-emerald-400 tracking-tight">
-              Qol<span className="text-amber-500">masin</span>
-            </span>
-          </Link>
-        </div>
+      <header className="w-full bg-white dark:bg-gray-900 border-b border-emerald-100/60 dark:border-gray-800 shadow-sm select-none transition-colors duration-200">
+        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
+          
+          {/* Logo */}
+          <div className="flex items-center">
+            <Link to="/" className="flex items-center gap-1">
+              <span className="text-2xl font-black text-emerald-900 dark:text-emerald-400 tracking-tight">
+                Qol<span className="text-amber-500">masin</span>
+              </span>
+            </Link>
+          </div>
 
-        <div className="p-4 mx-3 my-2 bg-emerald-50/50 dark:bg-gray-800/50 rounded-2xl border border-emerald-100/50 dark:border-gray-700/50">
+          {/* Navigation Links */}
+          <nav className="hidden md:flex items-center space-x-1 overflow-x-auto py-2 custom-scrollbar">
+            {currentMenu.map((item) => {
+              const Icon = item.icon;
+              const isActive = location.pathname === item.path;
+
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold transition-all duration-200 whitespace-nowrap ${
+                    isActive
+                      ? 'bg-emerald-800 text-white shadow-md shadow-emerald-900/10'
+                      : 'text-gray-600 dark:text-gray-300 hover:bg-emerald-50/80 dark:hover:bg-gray-800 hover:text-emerald-900 dark:hover:text-white'
+                  }`}
+                >
+                  <Icon
+                    className={`w-4 h-4 transition-transform duration-200 ${
+                      isActive ? 'text-white' : 'text-gray-400 dark:text-gray-500'
+                    }`}
+                  />
+                  <span>{item.name}</span>
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* Right Side: User Profile & Logout */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-emerald-800 text-white flex items-center justify-center font-bold text-sm shadow-sm">
-              {user?.fullName ? user.fullName.charAt(0).toUpperCase() : 'F'}
+            {/* User Info Badge */}
+            <div className="hidden sm:flex items-center gap-3 py-1.5 px-3 bg-emerald-50/50 dark:bg-gray-800/50 rounded-2xl border border-emerald-100/50 dark:border-gray-700/50">
+              <div className="w-8 h-8 rounded-full bg-emerald-800 text-white flex items-center justify-center font-bold text-xs shadow-sm">
+                {user?.fullName ? user.fullName.charAt(0).toUpperCase() : 'F'}
+              </div>
+              <div className="min-w-0 text-left">
+                <p className="text-xs font-bold text-gray-900 dark:text-white truncate max-w-[100px]">
+                  {user?.fullName || 'Foydalanuvchi'}
+                </p>
+                <p className="text-[10px] text-emerald-700 dark:text-emerald-400 capitalize truncate font-medium">
+                  {user?.role ? user.role.toLowerCase().replace('_', ' ') : 'Foydalanuvchi'}
+                </p>
+              </div>
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-gray-900 dark:text-white truncate">
-                {user?.fullName || 'Foydalanuvchi'}
-              </p>
-              <p className="text-xs text-emerald-700 dark:text-emerald-400 capitalize truncate font-medium">
-                {user?.role ? user.role.toLowerCase().replace('_', ' ') : 'Foydalanuvchi'}
-              </p>
-            </div>
+
+            {/* Logout Button */}
+            <button
+              onClick={() => setIsLogoutDialogOpen(true)}
+              className="flex items-center justify-center gap-1.5 px-3 py-2 text-sm font-bold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100/80 dark:bg-red-950/30 dark:hover:bg-red-900/40 rounded-xl transition-all duration-200 cursor-pointer"
+            >
+              <LogOut className="w-4 h-4" />
+              <span className="hidden sm:inline">Chiqish</span>
+            </button>
           </div>
         </div>
 
-        <nav className="flex-1 overflow-y-auto py-2 px-3 space-y-1.5 custom-scrollbar">
+        {/* Mobile Sub-navigation (agar ekran kichik bo'lsa pastda chiqishi uchun) */}
+        <div className="md:hidden flex items-center overflow-x-auto px-4 py-2 border-t border-emerald-50 dark:border-gray-800 space-x-1">
           {currentMenu.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
@@ -115,33 +161,19 @@ export const Sidebar: React.FC = () => {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 whitespace-nowrap ${
                   isActive
-                    ? 'bg-emerald-800 text-white shadow-md shadow-emerald-900/10'
-                    : 'text-gray-600 dark:text-gray-300 hover:bg-emerald-50/80 dark:hover:bg-gray-800 hover:text-emerald-900 dark:hover:text-white'
+                    ? 'bg-emerald-800 text-white shadow-sm'
+                    : 'text-gray-600 dark:text-gray-300 hover:bg-emerald-50/80 dark:hover:bg-gray-800'
                 }`}
               >
-                <Icon
-                  className={`w-5 h-5 transition-transform duration-200 ${
-                    isActive ? 'text-white' : 'text-gray-400 dark:text-gray-500'
-                  }`}
-                />
-                <span className="truncate">{item.name}</span>
+                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-white' : 'text-gray-400'}`} />
+                <span>{item.name}</span>
               </Link>
             );
           })}
-        </nav>
-
-        <div className="p-4 border-t border-emerald-50 dark:border-gray-800">
-          <button
-            onClick={() => setIsLogoutDialogOpen(true)}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-bold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100/80 dark:bg-red-950/30 dark:hover:bg-red-900/40 rounded-xl transition-all duration-200 cursor-pointer"
-          >
-            <LogOut className="w-4 h-4" />
-            <span>Chiqish</span>
-          </button>
         </div>
-      </aside>
+      </header>
 
       {/* Modal Dialog */}
       {isLogoutDialogOpen && (
@@ -197,4 +229,4 @@ export const Sidebar: React.FC = () => {
   );
 };
 
-export default Sidebar;
+export default Navbar;
