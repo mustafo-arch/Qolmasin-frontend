@@ -9,6 +9,12 @@ const navLinks = [
   { label: "Bog'lanish", href: "/boglanish" },
 ]
 
+const isNavLinkActive = (pathname: string, href: string) => {
+  if (href === "/") return pathname === "/"
+  if (href === "/batafsil") return pathname === "/batafsil" || pathname === "/about"
+  return pathname === href
+}
+
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { pathname } = useLocation()
@@ -50,7 +56,7 @@ const Navbar = () => {
               type="search"
               placeholder="Mahsulot yoki do'kon qidiring"
               aria-label="Qidiruv"
-              className="glass-control h-11 w-full rounded-full border border-slate-300/90 bg-white/75 pl-11 pr-5 text-sm text-slate-900 outline-none transition placeholder:text-slate-500 focus:border-emerald-600 focus:bg-white/90 focus:ring-4 focus:ring-emerald-600/10 xl:h-12"
+              className="glass-control h-11 w-full rounded-full !border-slate-400 bg-white/75 pl-11 pr-5 text-sm text-slate-900 outline-none transition placeholder:text-slate-500 focus:!border-emerald-600 focus:bg-white/90 focus:ring-4 focus:ring-emerald-600/10 xl:h-12"
             />
           </label>
         </form>
@@ -63,9 +69,9 @@ const Navbar = () => {
               <Link
                 key={link.label}
                 to={link.href}
-                aria-current={pathname === link.href ? "page" : undefined}
+                aria-current={isNavLinkActive(pathname, link.href) ? "page" : undefined}
                 className={`whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium transition-colors hover:bg-emerald-50 hover:text-emerald-700 ${
-                  pathname === link.href
+                  isNavLinkActive(pathname, link.href)
                     ? "bg-emerald-50 font-semibold text-emerald-800"
                     : "text-slate-500"
                 }`}
@@ -127,7 +133,7 @@ const Navbar = () => {
                 type="search"
                 placeholder="Mahsulot yoki do'kon qidiring"
                 aria-label="Qidiruv"
-                className="glass-control h-11 w-full rounded-full border border-slate-300/90 bg-white/75 pl-11 pr-4 text-sm outline-none focus:border-emerald-600 focus:bg-white/90 focus:ring-4 focus:ring-emerald-600/10"
+                className="glass-control h-11 w-full rounded-full !border-slate-400 bg-white/75 pl-11 pr-4 text-sm outline-none focus:!border-emerald-600 focus:bg-white/90 focus:ring-4 focus:ring-emerald-600/10"
               />
             </label>
           </form>
@@ -138,9 +144,9 @@ const Navbar = () => {
                 key={link.label}
                 to={link.href}
                 onClick={() => setIsMenuOpen(false)}
-                aria-current={pathname === link.href ? "page" : undefined}
+                aria-current={isNavLinkActive(pathname, link.href) ? "page" : undefined}
                 className={`rounded-lg px-3 py-3 text-sm font-medium transition-colors hover:bg-emerald-50 hover:text-emerald-700 ${
-                  pathname === link.href
+                  isNavLinkActive(pathname, link.href)
                     ? "bg-emerald-50 font-semibold text-emerald-800"
                     : "text-slate-600"
                 }`}
@@ -148,7 +154,6 @@ const Navbar = () => {
                 {link.label}
               </Link>
             ))}
-            {/* qotoq */}
             <div className="mt-3 grid grid-cols-2 gap-3 border-t border-slate-200 pt-4">
               <Link
                 to="/login"

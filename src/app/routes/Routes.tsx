@@ -8,6 +8,8 @@ import Dashboard from '@/pages/public/Dashboard';
 import { ProtectedRoute } from '../guards/ProtectedRoute';
 import About from '@/pages/public/about/About';
 import Contact from '@/pages/public/contact/Contact';
+import Offers from '@/pages/public/offers/Offers';
+import Businesses from '@/pages/public/businesses/Businesses';
 
 // =====================================================================
 // ⚠️ VAQTINCHA PLACEHOLDER
@@ -50,9 +52,9 @@ const AppRoutes = () => {
       <Route path="/verify-email" element={<Placeholder name="Verify Email" />} />
       
       {/* Public business/offers pages */}
-      <Route path="/businesses" element={<Placeholder name="Businesses List" />} />
+      <Route path="/businesses" element={<Businesses />} />
       <Route path="/businesses/:slug" element={<Placeholder name="Business Details" />} />
-      <Route path="/offers" element={<Placeholder name="Offers List" />} />
+      <Route path="/offers" element={<Offers />} />
       <Route path="/offers/:id" element={<Placeholder name="Offer Details" />} />
 
       {/* ============================================================ */}
