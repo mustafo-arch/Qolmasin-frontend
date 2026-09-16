@@ -36,13 +36,6 @@ const ProfilePage: React.FC = () => {
     }
   };
 
-  const formatDate = (dateString?: string | null) => {
-    if (!dateString) return 'Noma\'lum';
-    return new Date(dateString).toLocaleDateString('uz-UZ', {
-      year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
-    });
-  };
-
   return (
     <div className="max-w-4xl mx-auto p-4 md:p-6 space-y-6 animate-fadeIn">
       

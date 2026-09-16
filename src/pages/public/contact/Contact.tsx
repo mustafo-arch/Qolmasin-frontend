@@ -23,10 +23,10 @@ const Contact = () => {
   }
 
   return (
-    <div className="min-h-screen overflow-hidden bg-[#f7f5f0] text-slate-900">
+    <div className="min-h-screen bg-[#f7f5f0] text-slate-900">
       <Navbar />
 
-      <main>
+      <main className="overflow-x-clip">
         <section className="relative mx-auto max-w-[1280px] px-5 pb-16 pt-12 sm:px-8 lg:px-10 lg:pb-24 lg:pt-20">
           <div className="pointer-events-none absolute -right-20 top-10 size-72 rounded-full bg-orange-200/35 blur-3xl" />
           <div className="pointer-events-none absolute -left-24 bottom-0 size-80 rounded-full bg-emerald-200/30 blur-3xl" />

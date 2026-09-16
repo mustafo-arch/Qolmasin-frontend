@@ -71,10 +71,10 @@ const About = () => {
   }
 
   return (
-    <div className="min-h-screen overflow-hidden bg-[#f7f5f0] text-slate-900">
+    <div className="min-h-screen bg-[#f7f5f0] text-slate-900">
       <Navbar />
 
-      <main>
+      <main className="overflow-x-clip">
         <section className="mx-auto max-w-[1280px] px-5 pb-16 pt-10 sm:px-8 lg:px-10 lg:pb-24 lg:pt-14">
           <div className="grid items-center gap-10 lg:grid-cols-[0.92fr_1.08fr] lg:gap-16">
             <div>

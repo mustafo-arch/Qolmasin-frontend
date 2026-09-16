@@ -1,7 +1,7 @@
 import Logo from '../../assets/logo.png'
 import { useState } from "react"
 import { Menu, Search, X } from "lucide-react"
-import { Link, useLocation } from "react-router-dom"
+import { Link, NavLink, useLocation } from "react-router-dom"
 
 const navLinks = [
   { label: "Bosh sahifa", href: "/" },
@@ -10,14 +10,38 @@ const navLinks = [
 ]
 
 const isNavLinkActive = (pathname: string, href: string) => {
-  if (href === "/") return pathname === "/"
-  if (href === "/batafsil") return pathname === "/batafsil" || pathname === "/about"
-  return pathname === href
+  const cleanPath = pathname.split('#')[0]
+
+  if (href === "/") return cleanPath === "/"
+  if (href === "/batafsil") return cleanPath === "/batafsil" || cleanPath === "/about"
+  if (href === "/boglanish") return cleanPath === "/boglanish" || cleanPath === "/contact"
+
+  return cleanPath === href
 }
+
+const getNavLinkClassName = (isActive: boolean) =>
+  `whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium transition-colors hover:bg-emerald-50 hover:text-emerald-700 ${
+    isActive ? "bg-emerald-50 font-semibold text-emerald-800" : "text-slate-500"
+  }`
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { pathname } = useLocation()
+
+  const handleNavClick = (href: string) => (event: React.MouseEvent<HTMLAnchorElement>) => {
+    const cleanPath = window.location.pathname.split('#')[0]
+
+    if (href === "/batafsil" && cleanPath === "/batafsil") {
+      event.preventDefault()
+      document.getElementById('qanday-ishlaydi')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      return
+    }
+
+    if (href === "/boglanish" && cleanPath === "/boglanish") {
+      event.preventDefault()
+      document.getElementById('murojaat')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
 
   return (
     <header className="sticky top-0 z-50 border-t-[3px] border-slate-800/80 bg-transparent px-3 pt-3 sm:px-5">
@@ -64,18 +88,15 @@ const Navbar = () => {
           {/* Nav links */}
           <div className="flex items-center gap-3 lg:gap-4 xl:gap-5">
             {navLinks.map((link) => (
-              <Link
+              <NavLink
                 key={link.label}
                 to={link.href}
+                onClick={handleNavClick(link.href)}
                 aria-current={isNavLinkActive(pathname, link.href) ? "page" : undefined}
-                className={`whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium transition-colors hover:bg-emerald-50 hover:text-emerald-700 ${
-                  isNavLinkActive(pathname, link.href)
-                    ? "bg-emerald-50 font-semibold text-emerald-800"
-                    : "text-slate-500"
-                }`}
+                className={({ isActive }) => getNavLinkClassName(isActive || isNavLinkActive(pathname, link.href))}
               >
                 {link.label}
-              </Link>
+              </NavLink>
             ))}
           </div>
 
@@ -138,19 +159,24 @@ const Navbar = () => {
 
           <div className="mt-4 grid gap-1">
             {navLinks.map((link) => (
-              <Link
+              <NavLink
                 key={link.label}
                 to={link.href}
-                onClick={() => setIsMenuOpen(false)}
+                onClick={() => {
+                  setIsMenuOpen(false)
+                  handleNavClick(link.href)({
+                    preventDefault: () => undefined,
+                  } as React.MouseEvent<HTMLAnchorElement>)
+                }}
                 aria-current={isNavLinkActive(pathname, link.href) ? "page" : undefined}
-                className={`rounded-lg px-3 py-3 text-sm font-medium transition-colors hover:bg-emerald-50 hover:text-emerald-700 ${
-                  isNavLinkActive(pathname, link.href)
+                className={({ isActive }) => `rounded-lg px-3 py-3 text-sm font-medium transition-colors hover:bg-emerald-50 hover:text-emerald-700 ${
+                  isActive || isNavLinkActive(pathname, link.href)
                     ? "bg-emerald-50 font-semibold text-emerald-800"
                     : "text-slate-600"
                 }`}
               >
                 {link.label}
-              </Link>
+              </NavLink>
             ))}
             <div className="mt-3 grid grid-cols-2 gap-3 border-t border-slate-200 pt-4">
               <Link
