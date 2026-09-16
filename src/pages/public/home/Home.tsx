@@ -61,12 +61,19 @@ const faqs = [
   { question: "Biznesimni Qolmasinga qanday qo‘shaman?", answer: "Ro‘yxatdan o‘ting, biznes ma’lumotlarini kiriting va sotilmay qolishi mumkin bo‘lgan mahsulotlaringizni foydali narxda taklif qiling." },
 ]
 
+const categories = [
+  { name: "Non va pishiriqlar", count: "45+ taklif", icon: ShoppingBag, color: "bg-amber-100 text-amber-800" },
+  { name: "Tayyor taomlar", count: "80+ taklif", icon: Store, color: "bg-emerald-100 text-emerald-800" },
+  { name: "Kafe va ichimliklar", count: "35+ taklif", icon: Clock3, color: "bg-orange-100 text-orange-800" },
+  { name: "Meva va sabzavotlar", count: "25+ taklif", icon: Leaf, color: "bg-green-100 text-green-800" },
+]
+
 const Home = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
 
   return (
     <div className="min-h-screen bg-[#f7f5f0] text-slate-900">
-      <div className="mx-auto max-w-[90%] px-3 pb-10 pt-0 sm:px-5 lg:px-8">
+      <div className="mx-auto max-w-[1280px] px-3 pb-10 pt-0 sm:px-5 lg:px-8 xl:max-w-[1340px]">
 
 
         <main
@@ -88,11 +95,11 @@ const Home = () => {
 
               <h1 className="max-w-[620px] text-[clamp(3.1rem,4.8vw,5.8rem)] font-black leading-[0.94] tracking-[-0.07em] text-slate-900">
                 Yaxshi mahsulot
-                <span className="block text-emerald-800">isrof bo&apos;lmasin.</span>
+                <span className="block text-emerald-800">isrof bo‘lmasin.</span>
               </h1>
 
               <p className="mt-6 max-w-[560px] text-[clamp(1.08rem,1.3vw,1.25rem)] leading-[1.45] text-slate-600 lg:mt-6">
-                Yaqinishingizdagi nonvoyxona, do&apos;kon va kafelardagi sifatli mahsulotlarni 70% gacha arzonroq toping.
+                Yaqiningizdagi nonvoyxona, do‘kon va kafelardagi sifatli mahsulotlarni 70% gacha arzonroq toping.
               </p>
 
               <div className="mt-7 flex flex-col gap-4 sm:flex-row sm:items-center">
@@ -104,12 +111,12 @@ const Home = () => {
                   <ArrowRight className="size-4" strokeWidth={2.5} />
                 </Link>
 
-                <Link
-                  to="/batafsil"
+                <a
+                  href="#qanday-ishlaydi"
                   className="glass-control inline-flex w-full items-center justify-center rounded-xl px-6 py-4 text-base font-semibold text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-white/70 sm:w-auto"
                 >
                   Qanday ishlaydi?
-                </Link>
+                </a>
               </div>
 
               <div className="mt-9 flex flex-wrap items-center gap-6 text-sm text-slate-700 sm:text-base">
@@ -159,13 +166,13 @@ const Home = () => {
                     <p className="mt-2 text-base text-emerald-50/90">gacha foydali narxlar</p>
                   </div>
 
-                  <Link
-                    to="/batafsil#qanday-ishlaydi"
+                  <a
+                    href="#qanday-ishlaydi"
                     className="inline-flex w-fit items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/15"
                   >
                     Qanday ishlaydi?
                     <ArrowRight className="size-4" />
-                  </Link>
+                  </a>
                 </div>
               </div>
             </section>
@@ -184,36 +191,128 @@ const Home = () => {
           </div>
         </section>
 
-        <section className="py-16 lg:py-24" aria-labelledby="categories-title">
-          <div className="rounded-[2rem] border border-emerald-100 bg-emerald-50/70 px-6 py-10 text-center sm:px-10 lg:py-14">
-            <p className="mb-3 text-sm font-bold uppercase tracking-[0.18em] text-orange-600">Mazali tanlovlar</p>
-            <h2 id="categories-title" className="text-3xl font-black leading-[1.05] tracking-[-0.05em] sm:text-5xl">Shunga o‘xshash mahsulotlarni xarid qilishingiz mumkin.</h2>
-            <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600">Login qilganingizdan keyin yaqin bizneslardagi chegirmali taomlar va foydali takliflarni ko‘rishingiz mumkin.</p>
+        <section className="py-12 lg:py-16" aria-labelledby="categories-title">
+          <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+            <div>
+              <p className="mb-2 text-sm font-bold uppercase tracking-[0.18em] text-orange-600">Kategoriyalar</p>
+              <h2 id="categories-title" className="text-3xl font-black tracking-[-0.05em] sm:text-4xl">
+                O‘zingizga ma’qul <span className="text-emerald-800">yo‘nalishni tanlang.</span>
+              </h2>
+            </div>
+            <Link
+              to="/offers"
+              className="inline-flex items-center gap-2 font-bold text-emerald-800 transition hover:text-orange-600"
+            >
+              Barcha kategoriyalar <ArrowRight className="size-4" />
+            </Link>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {categories.map((category) => {
+              const Icon = category.icon
+              return (
+                <Link
+                  key={category.name}
+                  to="/offers"
+                  className="group flex items-center gap-4 rounded-2xl border border-slate-200 bg-white/80 p-5 shadow-sm transition hover:-translate-y-1 hover:border-emerald-300 hover:shadow-md"
+                >
+                  <span className={`grid size-12 shrink-0 place-items-center rounded-xl ${category.color}`}>
+                    <Icon className="size-6" />
+                  </span>
+                  <div>
+                    <h3 className="font-bold text-slate-900 group-hover:text-emerald-800">{category.name}</h3>
+                    <span className="text-xs text-slate-500">{category.count}</span>
+                  </div>
+                </Link>
+              )
+            })}
           </div>
         </section>
 
         <section className="pb-16 lg:pb-24" aria-labelledby="offers-title">
-          {isAuthenticated ? (
-            <>
-              <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
-                <div><p className="mb-3 text-sm font-bold uppercase tracking-[0.18em] text-orange-600">Tanlangan takliflar</p><h2 id="offers-title" className="text-4xl font-black leading-[1.02] tracking-[-0.05em] sm:text-5xl">Bugun tejash uchun <span className="text-emerald-800">3 sabab.</span></h2></div>
-                <p className="max-w-sm leading-7 text-slate-600">Yaqin bizneslardan yangi, mazali va hamyonbop mahsulotlarni bir joyda toping.</p>
+          <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+            <div>
+              <p className="mb-3 text-sm font-bold uppercase tracking-[0.18em] text-orange-600">Tanlangan takliflar</p>
+              <h2 id="offers-title" className="text-4xl font-black leading-[1.02] tracking-[-0.05em] sm:text-5xl">
+                Bugun tejash uchun <span className="text-emerald-800">3 sabab.</span>
+              </h2>
+            </div>
+            <div className="flex items-center gap-4">
+              <p className="hidden max-w-sm leading-7 text-slate-600 sm:block">
+                Yaqin bizneslardan yangi, mazali va hamyonbop mahsulotlarni bir joyda toping.
+              </p>
+              <Link
+                to="/offers"
+                className="inline-flex items-center gap-2 whitespace-nowrap text-sm font-bold text-emerald-800 transition hover:text-orange-600"
+              >
+                Barchasi <ArrowRight className="size-4" />
+              </Link>
+            </div>
+          </div>
+          <div className="mt-9 grid gap-5 md:grid-cols-3">
+            {featuredOffers.map((offer) => (
+              <article
+                key={offer.title}
+                className="overflow-hidden rounded-[1.7rem] border border-slate-200 bg-white shadow-[0_12px_30px_rgba(15,23,42,0.06)] transition hover:-translate-y-1 hover:shadow-[0_18px_35px_rgba(15,23,42,0.11)]"
+              >
+                <div className="relative h-52 overflow-hidden">
+                  <img
+                    src={offer.image}
+                    alt={offer.title}
+                    className="h-full w-full object-cover transition duration-500 hover:scale-105"
+                  />
+                  <span className="absolute left-4 top-4 rounded-full bg-orange-500 px-3 py-1.5 text-xs font-bold text-white">
+                    -40% gacha
+                  </span>
+                </div>
+                <div className="p-5">
+                  <div className="flex items-center justify-between gap-3 text-xs text-slate-500">
+                    <span>{offer.business}</span>
+                    <span className="inline-flex items-center gap-1 text-emerald-700">
+                      <MapPin className="size-3.5" />
+                      {offer.distance}
+                    </span>
+                  </div>
+                  <h3 className="mt-3 text-xl font-bold">{offer.title}</h3>
+                  <div className="mt-5 flex items-end justify-between">
+                    <div>
+                      <strong className="text-lg font-black text-emerald-800">{offer.price}</strong>
+                      <span className="ml-2 text-sm text-slate-400 line-through">{offer.oldPrice}</span>
+                    </div>
+                    <Link
+                      to="/offers"
+                      aria-label={`${offer.title} taklifini ko‘rish`}
+                      className="grid size-10 place-items-center rounded-full bg-emerald-50 text-emerald-800 transition hover:bg-emerald-800 hover:text-white"
+                    >
+                      <ArrowRight className="size-4" />
+                    </Link>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          {!isAuthenticated && (
+            <div className="mt-8 flex flex-col items-center justify-between gap-4 rounded-2xl border border-emerald-200/70 bg-emerald-50/70 p-6 sm:flex-row sm:px-8">
+              <div>
+                <h3 className="text-lg font-bold text-slate-900">Takliflarni band qilish uchun tizimga kiring</h3>
+                <p className="mt-1 text-sm text-slate-600">
+                  Ro‘yxatdan o‘tmasdan ham barcha takliflarni ko‘rishingiz mumkin. Buyurtma berish uchun akkaunt kerak bo‘ladi.
+                </p>
               </div>
-              <div className="mt-9 grid gap-5 md:grid-cols-3">
-                {featuredOffers.map((offer) => (
-                  <article key={offer.title} className="overflow-hidden rounded-[1.7rem] border border-slate-200 bg-white shadow-[0_12px_30px_rgba(15,23,42,0.06)] transition hover:-translate-y-1 hover:shadow-[0_18px_35px_rgba(15,23,42,0.11)]">
-                    <div className="relative h-52 overflow-hidden"><img src={offer.image} alt={offer.title} className="h-full w-full object-cover transition duration-500 hover:scale-105" /><span className="absolute left-4 top-4 rounded-full bg-orange-500 px-3 py-1.5 text-xs font-bold text-white">-40% gacha</span></div>
-                    <div className="p-5"><div className="flex items-center justify-between gap-3 text-xs text-slate-500"><span>{offer.business}</span><span className="inline-flex items-center gap-1 text-emerald-700"><MapPin className="size-3.5" />{offer.distance}</span></div><h3 className="mt-3 text-xl font-bold">{offer.title}</h3><div className="mt-5 flex items-end justify-between"><div><strong className="text-lg font-black text-emerald-800">{offer.price}</strong><span className="ml-2 text-sm text-slate-400 line-through">{offer.oldPrice}</span></div><Link to="/offers" aria-label={`${offer.title} taklifini ko‘rish`} className="grid size-10 place-items-center rounded-full bg-emerald-50 text-emerald-800 transition hover:bg-emerald-800 hover:text-white"><ArrowRight className="size-4" /></Link></div></div>
-                  </article>
-                ))}
+              <div className="flex shrink-0 items-center gap-3">
+                <Link
+                  to="/login"
+                  className="rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-bold text-slate-700 transition hover:border-emerald-600 hover:text-emerald-800"
+                >
+                  Kirish
+                </Link>
+                <Link
+                  to="/register"
+                  className="rounded-xl bg-emerald-800 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-emerald-700"
+                >
+                  Ro‘yxatdan o‘tish
+                </Link>
               </div>
-            </>
-          ) : (
-            <div className="rounded-[2rem] bg-[#0c6f56] px-6 py-10 text-center text-white shadow-[0_18px_35px_rgba(12,111,86,0.16)] sm:px-10">
-              <p className="text-sm font-bold uppercase tracking-[0.18em] text-orange-200">Maxsus takliflar</p>
-              <h2 id="offers-title" className="mt-3 text-3xl font-black tracking-[-0.05em] sm:text-4xl">Chegirmali mahsulotlarni ko‘rish uchun kiring.</h2>
-              <p className="mx-auto mt-3 max-w-xl leading-7 text-emerald-50/80">Mehmon sifatida kategoriyalar va bizneslarni ko‘rishingiz mumkin. Tanlangan chegirmali cardlar login qilgandan keyin ochiladi.</p>
-              <Link to="/login" className="mt-6 inline-flex items-center gap-2 rounded-xl bg-orange-400 px-5 py-3.5 font-bold text-slate-900 transition hover:bg-orange-300">Tizimga kirish <ArrowRight className="size-4" /></Link>
             </div>
           )}
         </section>
@@ -277,7 +376,7 @@ const Home = () => {
           </div>
         </section>
 
-        <section className="overflow-hidden rounded-[2rem] bg-[#0f765f] px-6 py-14 text-white shadow-[0_20px_40px_rgba(15,118,95,0.18)] sm:px-10 lg:px-14 lg:py-20">
+        <section id="qanday-ishlaydi" className="overflow-hidden rounded-[2rem] bg-[#0f765f] px-6 py-14 text-white shadow-[0_20px_40px_rgba(15,118,95,0.18)] sm:px-10 lg:px-14 lg:py-20">
           <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
             <div>
               <p className="mb-3 text-sm font-bold uppercase tracking-[0.18em] text-orange-200">Juda oson</p>
@@ -317,7 +416,7 @@ const Home = () => {
         <section className="grid gap-10 py-16 lg:grid-cols-[0.8fr_1.2fr] lg:py-24" aria-labelledby="faq-title">
           <div><p className="mb-3 text-sm font-bold uppercase tracking-[0.18em] text-orange-600">Ko‘p so‘raladi</p><h2 id="faq-title" className="text-4xl font-black leading-[1.02] tracking-[-0.05em] sm:text-5xl">Qolmasin haqida <span className="text-emerald-800">savollar.</span></h2><p className="mt-5 max-w-md leading-7 text-slate-600">Xizmatimiz va takliflar haqida eng kerakli javoblarni shu yerdan toping.</p><Link to="/boglanish" className="mt-7 inline-flex items-center gap-2 font-bold text-emerald-800 transition hover:text-orange-600">Yana savolingiz bormi? <ArrowRight className="size-4" /></Link></div>
           <div className="divide-y divide-slate-200 rounded-[1.7rem] bg-white/70 px-6 shadow-[0_12px_30px_rgba(15,23,42,0.05)] sm:px-8">
-            {faqs.map((faq) => <details key={faq.question} className="group py-5"><summary className="flex cursor-pointer list-none items-center justify-between gap-5 text-lg font-bold marker:hidden">{faq.question}<ChevronDown className="size-5 shrink-0 text-emerald-700 transition group-open:rotate-180" /></summary><p className="max-w-2xl pt-3 leading-7 text-slate-600">{faq.answer}</p></details>)}
+            {faqs.map((faq) => <details key={faq.question} className="group py-5"><summary className="flex cursor-pointer list-none items-center justify-between gap-5 text-lg font-bold marker:hidden [&::-webkit-details-marker]:hidden">{faq.question}<ChevronDown className="size-5 shrink-0 text-emerald-700 transition group-open:rotate-180" /></summary><p className="max-w-2xl pt-3 leading-7 text-slate-600">{faq.answer}</p></details>)}
           </div>
         </section>
 
