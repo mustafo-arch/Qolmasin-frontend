@@ -3,35 +3,15 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
-  Home,
-  ShoppingBag,
-  Heart,
-  Bell,
-  User,
-  BarChart3,
-  MapPin,
-  Package,
-  Tag,
-  ClipboardList,
-  Users,
-  Star,
-  ShieldAlert,
-  UserCheck,
-  Building2,
-  FolderTree,
-  Flag,
-  AlertTriangle,
-  FileText,
-  LogOut,
-  Settings,
-  X,
-  ChevronDown,
+  Home, ShoppingBag, Heart, Bell, User, BarChart3, MapPin, Package, 
+  Tag, ClipboardList, Users, Star, ShieldAlert, UserCheck, Building2, 
+  FolderTree, Flag, AlertTriangle, FileText, LogOut, Settings, X, ChevronDown
 } from 'lucide-react';
 
 import { UserRole } from '@/features/auth/types';
 import { useAuthStore } from '@/features/auth/store';
 
-// Profil menyusi olib tashlandi, faqat navbarda turadigan asosiy tugmalar qoldi
+// Menyu konfiguratsiyasi (o'zgarmas)
 const menuConfig = {
   CUSTOMER: [
     { name: 'Bosh sahifa', path: '/app/dashboard', icon: Home },
@@ -62,13 +42,16 @@ const menuConfig = {
 export const Navbar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  
+  // Store dan haqiqiy user ma'lumotlarini olamiz
   const { user, logout, isLoading } = useAuthStore();
+  
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Rolga qarab menyuni aniqlash
   let currentMenu = menuConfig.CUSTOMER;
-
   if (user?.role) {
     const businessRoles: UserRole[] = [UserRole.BUSINESS_OWNER, UserRole.BUSINESS_STAFF];
     const adminRoles: UserRole[] = [UserRole.MODERATOR, UserRole.ADMIN, UserRole.SUPER_ADMIN];
@@ -80,7 +63,7 @@ export const Navbar: React.FC = () => {
     }
   }
 
-  // Tashqariga bosilganda dropdown menyuni yopish
+  // Tashqariga bosilganda dropdownni yopish
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -98,6 +81,12 @@ export const Navbar: React.FC = () => {
     navigate('/login', { replace: true });
   };
 
+  // Foydalanuvchi ma'lumotlari uchun xavfsiz o'zgaruvchilar
+  const displayName = user?.fullName || 'Foydalanuvchi';
+  const displayEmail = user?.email || 'email@example.com';
+  const displayRole = user?.role ? user.role.toLowerCase().replace('_', ' ') : 'customer';
+  const initialLetter = displayName.charAt(0).toUpperCase();
+
   return (
     <>
       <header className="w-full bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 shadow-sm select-none transition-colors duration-200">
@@ -112,7 +101,7 @@ export const Navbar: React.FC = () => {
             </Link>
           </div>
 
-          {/* Sahifalarga o'tish tugmalari */}
+          {/* Asosiy Navigatsiya */}
           <nav className="hidden md:flex items-center space-x-2 overflow-x-auto py-2 custom-scrollbar">
             {currentMenu.map((item) => {
               const Icon = item.icon;
@@ -128,49 +117,55 @@ export const Navbar: React.FC = () => {
                       : 'text-gray-600 dark:text-gray-300 hover:text-[#005B41] dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800/50'
                   }`}
                 >
-                  <Icon
-                    className={`w-4 h-4 transition-colors duration-200 ${
-                      isActive ? 'text-[#005B41] dark:text-emerald-400' : 'text-gray-500 dark:text-gray-400'
-                    }`}
-                  />
+                  <Icon className={`w-4 h-4 transition-colors duration-200 ${isActive ? 'text-[#005B41] dark:text-emerald-400' : 'text-gray-500 dark:text-gray-400'}`} />
                   <span>{item.name}</span>
                 </Link>
               );
             })}
           </nav>
 
-          {/* Foydalanuvchi profili (Dropdown) */}
+          {/* Foydalanuvchi Profili Dropdown */}
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-              className="flex items-center gap-3 py-1.5 px-3 bg-emerald-50/40 hover:bg-emerald-50 border border-emerald-200/60 dark:bg-gray-800/60 dark:hover:bg-gray-800 dark:border-gray-700 rounded-full transition-all duration-200 cursor-pointer outline-none"
+              disabled={isLoading}
+              className="flex items-center gap-3 py-1.5 px-3 bg-emerald-50/40 hover:bg-emerald-50 border border-emerald-200/60 dark:bg-gray-800/60 dark:hover:bg-gray-800 dark:border-gray-700 rounded-full transition-all duration-200 cursor-pointer outline-none disabled:opacity-50"
             >
+              {/* Avatar / Initial */}
               <div className="w-8 h-8 rounded-full bg-[#005B41] text-white flex items-center justify-center font-bold text-xs shadow-sm">
-                {user?.fullName ? user.fullName.charAt(0).toUpperCase() : 'M'}
+                {isLoading ? '?' : initialLetter}
               </div>
-              <div className="min-w-0 text-left pr-1">
+              
+              {/* Ism va Rol */}
+              <div className="min-w-0 text-left pr-1 hidden sm:block">
                 <p className="text-xs font-bold text-gray-900 dark:text-white truncate max-w-[110px]">
-                  {user?.fullName || 'Mustafo'}
+                  {isLoading ? 'Yuklanmoqda...' : displayName}
                 </p>
                 <p className="text-[10px] text-emerald-700 dark:text-emerald-400 capitalize truncate font-medium">
-                  {user?.role ? user.role.toLowerCase().replace('_', ' ') : 'Customer'}
+                  {isLoading ? '...' : displayRole}
                 </p>
               </div>
+              
               <ChevronDown className={`w-4 h-4 text-emerald-800 dark:text-emerald-400 transition-transform duration-200 ${isUserMenuOpen ? 'rotate-180' : ''}`} />
             </button>
 
             {/* Dropdown Menyusi */}
-            {isUserMenuOpen && (
-              <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 py-2 z-50 animate-fadeIn">
-                <div className="px-4 py-2 border-b border-gray-100 dark:border-gray-800">
+            {isUserMenuOpen && !isLoading && (
+              <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 py-2 z-50 animate-fadeIn">
+                {/* Profil Header */}
+                <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50">
                   <p className="text-sm font-bold text-gray-900 dark:text-white truncate">
-                    {user?.fullName || 'Mustafo'}
+                    {displayName}
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                    {user?.email || 'foydalanuvchi@app.uz'}
+                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">
+                    {displayEmail}
                   </p>
+                  <span className="inline-block mt-2 px-2 py-0.5 text-[10px] font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400 rounded-full uppercase tracking-wide">
+                    {displayRole}
+                  </span>
                 </div>
 
+                {/* Menyu Elementlari */}
                 <div className="py-1">
                   <button
                     onClick={() => {
@@ -180,7 +175,7 @@ export const Navbar: React.FC = () => {
                     className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-emerald-50 dark:hover:bg-gray-800 transition-colors cursor-pointer"
                   >
                     <User className="w-4 h-4 text-emerald-700 dark:text-emerald-400" />
-                    <span>Profilga o'tish</span>
+                    <span>Mening profilim</span>
                   </button>
 
                   <button
@@ -195,6 +190,7 @@ export const Navbar: React.FC = () => {
                   </button>
                 </div>
 
+                {/* Logout Tugmasi */}
                 <div className="pt-1 border-t border-gray-100 dark:border-gray-800">
                   <button
                     onClick={() => {
@@ -212,12 +208,11 @@ export const Navbar: React.FC = () => {
           </div>
         </div>
 
-        {/* Mobil interfeys uchun navigatsiya */}
+        {/* Mobil Navigatsiya */}
         <div className="md:hidden flex items-center overflow-x-auto px-4 py-2 border-t border-gray-100 dark:border-gray-800 space-x-1">
           {currentMenu.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
-
             return (
               <Link
                 key={item.path}
@@ -236,9 +231,9 @@ export const Navbar: React.FC = () => {
         </div>
       </header>
 
-      {/* Chiqishni tasdiqlash modali */}
+      {/* Chiqish Tasdiqlash Modali */}
       {isLogoutDialogOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fadeIn">
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fadeIn">
           <div className="relative w-full max-w-sm bg-white dark:bg-gray-900 rounded-3xl p-6 shadow-2xl border border-gray-100 dark:border-gray-800">
             <button
               onClick={() => setIsLogoutDialogOpen(false)}
@@ -251,11 +246,9 @@ export const Navbar: React.FC = () => {
               <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 flex items-center justify-center mx-auto mb-4">
                 <LogOut className="w-6 h-6" />
               </div>
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-                Tizimdan chiqish
-              </h3>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white">Tizimdan chiqish</h3>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                Haqiqatan ham hisobingizdan chiqmoqchimisiz?
+                Haqiqatan ham <b>{displayName}</b> hisobidan chiqmoqchimisiz?
               </p>
             </div>
 
@@ -290,4 +283,4 @@ export const Navbar: React.FC = () => {
   );
 };
 
-export default Navbar;  
+export default Navbar;

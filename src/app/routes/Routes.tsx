@@ -8,6 +8,7 @@ import Dashboard from '@/pages/public/Dashboard';
 import { ProtectedRoute } from '../guards/ProtectedRoute';
 import About from '@/pages/public/about/About';
 import Contact from '@/pages/public/contact/Contact';
+import ProfilePage from '@/pages/private/profile/pages';
 
 // =====================================================================
 // ⚠️ VAQTINCHA PLACEHOLDER
@@ -75,7 +76,7 @@ const AppRoutes = () => {
             <Route path="orders" element={<Placeholder name="My Orders" />} />
             <Route path="favorites" element={<Placeholder name="My Favorites" />} />
             <Route path="alerts" element={<Placeholder name="Deal Alerts" />} />
-            <Route path="profile" element={<Placeholder name="Profile Settings" />} />
+            <Route path="profile" element={<ProfilePage/>} />
           </Route>
 
           {/* ---------- 🏢 BUSINESS ---------- */}
