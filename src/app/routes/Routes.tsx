@@ -11,6 +11,7 @@ import Contact from '@/pages/public/contact/Contact';
 import ProfilePage from '@/pages/private/profile/pages';
 import Offers from '@/pages/public/offers/Offers';
 import Businesses from '@/pages/public/businesses/Businesses';
+import { useAuthStore } from '@/features/auth/store'; // <--- QO'SHILDI
 
 // =====================================================================
 // ⚠️ VAQTINCHA PLACEHOLDER
@@ -24,13 +25,34 @@ const Placeholder = ({ name }: { name: string }) => (
 );
 
 // =====================================================================
+// 🔄 ROLGA QARAB YO'NALTIRISH (YANGI)
+// =====================================================================
+const DashboardRedirect = () => {
+  const { user } = useAuthStore();
+  
+  if (!user) return <Navigate to="/login" replace />;
+
+  // Admin va Moderatorlar uchun
+  if ([UserRole.ADMIN, UserRole.MODERATOR, UserRole.SUPER_ADMIN].includes(user.role)) {
+    return <Navigate to="admin/dashboard" replace />;
+  }
+  
+  // Biznes egalari va xodimlari uchun
+  if ([UserRole.BUSINESS_OWNER, UserRole.BUSINESS_STAFF].includes(user.role)) {
+    return <Navigate to="business/dashboard" replace />;
+  }
+  
+  // Oddiy mijozlar uchun (default)
+  return <Navigate to="dashboard" replace />;
+};
+
+// =====================================================================
 // 🔒 PRIVATE LAYOUT (Navbar + Content)
 // =====================================================================
 const AppLayout = () => (
   <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
     <Navbar />
     <main className="flex-1 overflow-y-auto p-4 md:p-6 relative">
-      {/* Ichki routelar shu yerda chiqadi */}
       <Outlet />
     </main>
   </div>
@@ -68,11 +90,10 @@ const AppRoutes = () => {
         {/* 2-qadam: Layout qatlami (Navbar ko'rsatadi) */}
         <Route path="/app" element={<AppLayout />}>
           
-          {/* /app ga kirganda avtomatik dashboardga otish */}
-          <Route index element={<Navigate to="dashboard" replace />} />
+          {/* ✅ O'ZGARTIRILDI: Rolga qarab avtomatik yo'naltirish */}
+          <Route index element={<DashboardRedirect />} />
 
           {/* ---------- 👤 CUSTOMER ---------- */}
-          {/* children props olib tashlandi, faqat element va ichki route qoldi */}
           <Route element={<RoleGuard allowedRoles={[UserRole.CUSTOMER]} />}>
             <Route path="dashboard" element={<Placeholder name="Customer Dashboard" />} />
             <Route path="orders" element={<Placeholder name="My Orders" />} />
@@ -81,7 +102,7 @@ const AppRoutes = () => {
             <Route path="profile" element={<ProfilePage/>} />
           </Route>
 
-          {/* ---------- 🏢 BUSINESS ---------- */}
+          {/* ----------  BUSINESS ---------- */}
           <Route element={<RoleGuard allowedRoles={[UserRole.BUSINESS_OWNER, UserRole.BUSINESS_STAFF]} />}>
             <Route path="business/dashboard" element={<Placeholder name="Business Analytics" />} />
             <Route path="business/branches" element={<Placeholder name="Branches" />} />

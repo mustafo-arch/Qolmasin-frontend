@@ -106,6 +106,7 @@ export const useAuthStore = create<AuthStore>()((set, get) => ({
         set({ accessToken: newAccessToken });
         const userResponse = await authEndpoints.getCurrentUser();
         set({ user: userResponse.data, isAuthenticated: true, isLoading: false });
+        console.log('User role from API:', userResponse.data.role)
       } else {
         throw new Error('No token received');
       }
@@ -114,6 +115,7 @@ export const useAuthStore = create<AuthStore>()((set, get) => ({
       console.warn('Auth check failed completely');
       set({ user: null, accessToken: null, isAuthenticated: false, isLoading: false });
     }
+
   },
 
   clearError: () => set({ error: null }),

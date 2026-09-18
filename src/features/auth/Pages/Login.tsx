@@ -1,14 +1,14 @@
-// src/components/auth/LoginForm.tsx
-
 import React, { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuthStore } from '../store';
 import type { LoginDto } from '../types';
+import { UserRole } from '@/features/auth/types'; // <--- QO'SHILDI: Rollarni tekshirish uchun
 
 export const LoginForm: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, isLoading, error, clearError } = useAuthStore();
+  // user ni ham store'dan olamiz, chunki login() dan keyin u yangilanadi
+  const { login, isLoading, error, clearError, user } = useAuthStore();
 
   const [formData, setFormData] = useState<LoginDto>({
     identifier: '',
@@ -16,15 +16,34 @@ export const LoginForm: React.FC = () => {
     deviceName: navigator.userAgent?.slice(0, 120),
   });
 
-  const from = (location.state as any)?.from?.pathname || '/app/dashboard';
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     clearError();
 
     try {
       await login(formData);
-      navigate(from, { replace: true });
+      
+      // YANGI MANTIQ: Rolga qarab yo'naltirish
+      const previousPath = (location.state as any)?.from?.pathname;
+
+      if (previousPath) {
+        // Agar foydalanuvchi himoyalangan sahifadan login sahifasiga tushib qolgan bo'lsa, o'sha yerga qaytarish
+        navigate(previousPath, { replace: true });
+      } else {
+        // Aks holda, rolga qarab default dashboardga yo'naltirish
+        if (user?.role === UserRole.ADMIN || 
+            user?.role === UserRole.MODERATOR || 
+            user?.role === UserRole.SUPER_ADMIN) {
+          navigate('/app/admin/dashboard', { replace: true });
+        } else if (user?.role === UserRole.BUSINESS_OWNER || 
+                   user?.role === UserRole.BUSINESS_STAFF) {
+          navigate('/app/business/dashboard', { replace: true });
+        } else {
+          // Default: Customer
+          navigate('/app/dashboard', { replace: true });
+        }
+      }
+
     } catch {
       // Xato allaqachon store da saqlangan
     }
