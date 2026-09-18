@@ -8,12 +8,16 @@ import Dashboard from '@/pages/public/Dashboard';
 import { ProtectedRoute } from '../guards/ProtectedRoute';
 import About from '@/pages/public/about/About';
 
+// ✅ Modullarni import qilish
+import MembersPage from '@/features/business-members/MembersPage';
+import ModerationPage from '@/features/businesses/ModerationPage';
+
 // =====================================================================
 // ⚠️ VAQTINCHA PLACEHOLDER
 // =====================================================================
 const Placeholder = ({ name }: { name: string }) => (
   <div className="flex flex-col items-center justify-center h-full min-h-[50vh]">
-    <div className="text-6xl mb-4"></div>
+    <div className="text-6xl mb-4">🚧</div>
     <h2 className="text-2xl font-bold text-gray-800">{name}</h2>
     <p className="mt-2 text-gray-500">Bu sahifa ishlab chiqilmoqda</p>
   </div>
@@ -26,7 +30,6 @@ const AppLayout = () => (
   <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
     <Navbar />
     <main className="flex-1 overflow-y-auto p-4 md:p-6 relative">
-      {/* Ichki routelar shu yerda chiqadi */}
       <Outlet />
     </main>
   </div>
@@ -47,32 +50,28 @@ const AppRoutes = () => {
       <Route path="/forgot-password" element={<Placeholder name="Forgot Password" />} />
       <Route path="/verify-email" element={<Placeholder name="Verify Email" />} />
       
-      {/* Public business/offers pages */}
       <Route path="/businesses" element={<Placeholder name="Businesses List" />} />
       <Route path="/businesses/:slug" element={<Placeholder name="Business Details" />} />
       <Route path="/offers" element={<Placeholder name="Offers List" />} />
       <Route path="/offers/:id" element={<Placeholder name="Offer Details" />} />
 
       {/* ============================================================ */}
-      {/*  PRIVATE ROUTES (/app prefix ostida)                        */}
+      {/* 🔒 PRIVATE ROUTES (/app prefix ostida)                       */}
       {/* ============================================================ */}
       
-      {/* 1-qadam: Himoya qatlami (Token borligini tekshiradi) */}
       <Route element={<ProtectedRoute />}> 
-        
-        {/* 2-qadam: Layout qatlami (Navbar ko'rsatadi) */}
         <Route path="/app" element={<AppLayout />}>
           
-          {/* /app ga kirganda avtomatik dashboardga otish */}
           <Route index element={<Navigate to="dashboard" replace />} />
 
           {/* ---------- 👤 CUSTOMER ---------- */}
-          {/* children props olib tashlandi, faqat element va ichki route qoldi */}
           <Route element={<RoleGuard allowedRoles={[UserRole.CUSTOMER]} />}>
             <Route path="dashboard" element={<Placeholder name="Customer Dashboard" />} />
             <Route path="orders" element={<Placeholder name="My Orders" />} />
             <Route path="favorites" element={<Placeholder name="My Favorites" />} />
             <Route path="alerts" element={<Placeholder name="Deal Alerts" />} />
+            <Route path="notifications" element={<Placeholder name="Notifications" />} />
+            <Route path="reviews" element={<Placeholder name="My Reviews" />} />
             <Route path="profile" element={<Placeholder name="Profile Settings" />} />
           </Route>
 
@@ -83,7 +82,10 @@ const AppRoutes = () => {
             <Route path="business/products" element={<Placeholder name="Products" />} />
             <Route path="business/offers" element={<Placeholder name="Offers Management" />} />
             <Route path="business/orders" element={<Placeholder name="Incoming Orders" />} />
-            <Route path="business/team" element={<Placeholder name="Team Members" />} />
+            
+            {/* ✅ DINAMIK ROUTE: URL dan :businessId ni oladi */}
+            <Route path="business/:businessId/team" element={<MembersPage />} />
+            
             <Route path="business/reviews" element={<Placeholder name="Reviews" />} />
           </Route>
 
@@ -91,16 +93,17 @@ const AppRoutes = () => {
           <Route element={<RoleGuard allowedRoles={[UserRole.MODERATOR, UserRole.ADMIN, UserRole.SUPER_ADMIN]} />}>
             <Route path="admin/dashboard" element={<Placeholder name="Admin Overview" />} />
             <Route path="admin/users" element={<Placeholder name="Users Management" />} />
-            <Route path="admin/businesses" element={<Placeholder name="Business Moderation" />} />
+            
+            {/* ✅ Business Moderatsiya sahifasi faqat ADMIN uchun */}
+            <Route path="admin/businesses" element={<ModerationPage />} />
+            
             <Route path="admin/categories" element={<Placeholder name="Categories" />} />
             <Route path="admin/reports" element={<Placeholder name="Reports" />} />
             <Route path="admin/anomalies" element={<Placeholder name="Price Anomalies" />} />
             <Route path="admin/audit-logs" element={<Placeholder name="Audit Logs" />} />
           </Route>
 
-          {/* Private ichidagi noto'g'ri manzillar uchun */}
           <Route path="*" element={<Navigate to="dashboard" replace />} />
-
         </Route>
       </Route>
 
@@ -126,7 +129,6 @@ const AppRoutes = () => {
           </button>
         </div>
       } />
-
     </Routes>
   );
 };
