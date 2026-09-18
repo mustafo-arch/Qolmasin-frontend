@@ -1,13 +1,18 @@
+import { useState, type FormEvent } from "react"
 import {
   ArrowRight,
   BadgeCheck,
   ChevronRight,
+  CheckCircle2,
   Clock3,
   Heart,
   Leaf,
+  Mail,
   MapPin,
+  MessageCircle,
   ShoppingBag,
   Store,
+  Send,
   Users,
 } from "lucide-react"
 import { Link } from "react-router-dom"
@@ -57,11 +62,19 @@ const steps = [
 ]
 
 const About = () => {
+  const [isMessageSent, setIsMessageSent] = useState(false)
+
+  const handleContactSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    event.currentTarget.reset()
+    setIsMessageSent(true)
+  }
+
   return (
-    <div className="min-h-screen overflow-hidden bg-[#f7f5f0] text-slate-900">
+    <div className="min-h-screen bg-[#f7f5f0] text-slate-900">
       <Navbar />
 
-      <main>
+      <main className="overflow-x-clip">
         <section className="mx-auto max-w-[1280px] px-5 pb-16 pt-10 sm:px-8 lg:px-10 lg:pb-24 lg:pt-14">
           <div className="grid items-center gap-10 lg:grid-cols-[0.92fr_1.08fr] lg:gap-16">
             <div>
@@ -169,6 +182,49 @@ const About = () => {
           <div className="grid overflow-hidden rounded-[2rem] bg-[#f0e9dc] lg:grid-cols-[1.15fr_0.85fr]">
             <div className="p-8 sm:p-12 lg:p-16"><p className="mb-4 text-sm font-bold uppercase tracking-[0.18em] text-emerald-800">Siz ham qo‘shiling</p><h2 className="max-w-xl text-4xl font-black tracking-[-0.05em] sm:text-5xl">Bugungi yaxshi taom ertangi isrofga aylanmasin.</h2><p className="mt-5 max-w-lg leading-7 text-slate-600">Qolmasin bilan tejamkor xarid qiling, mahalliy bizneslarga yordam bering va birgalikda tabiatga e’tiborli hayot tarzini yarating.</p><Link to="/register" className="mt-8 inline-flex items-center gap-2 rounded-xl bg-slate-900 px-6 py-4 font-semibold text-white transition hover:bg-emerald-800">Boshlash <ArrowRight className="size-4" /></Link></div>
             <div className="relative min-h-[280px] overflow-hidden"><img src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=1100&q=85" alt="Rang-barang yangi mahsulotlar" className="absolute inset-0 h-full w-full object-cover" /><div className="absolute inset-0 bg-emerald-900/10" /></div>
+          </div>
+        </section>
+
+        <section id="boglanish" className="border-y border-slate-200/80 bg-white/55 px-5 py-16 sm:px-8 lg:px-10 lg:py-24">
+          <div className="mx-auto grid max-w-[1280px] gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
+            <div>
+              <p className="mb-3 text-sm font-bold uppercase tracking-[0.18em] text-orange-600">Biz bilan bog‘laning</p>
+              <h2 className="max-w-xl text-4xl font-black leading-[1.02] tracking-[-0.05em] sm:text-5xl">Sizning fikringiz biz uchun muhim.</h2>
+              <p className="mt-5 max-w-lg text-lg leading-8 text-slate-600">
+                Biz, IT Center startapchilari, Qolmasin platformasini sizning kundalik muammolaringizni yengillashtirish uchun yaratdik. Sizga qanday website kerak bo‘lsa, qo‘limizdan kelgancha yordam berishga harakat qilamiz.
+              </p>
+              <p className="mt-4 max-w-lg leading-7 text-slate-500">
+                Savolingiz, taklifingiz yoki hamkorlik g‘oyangiz bo‘lsa, bizga yozing. Birgalikda yanada qulay va foydali xizmat yaratamiz.
+              </p>
+
+              <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+                <a href="mailto:salom@qolmasin.uz" className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white/80 p-4 transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-lg hover:shadow-emerald-900/5">
+                  <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-emerald-100 text-emerald-700"><Mail className="size-5" /></span>
+                  <span><span className="block text-xs font-bold uppercase tracking-wider text-slate-400">Email</span><span className="text-sm font-semibold text-slate-700">salom@qolmasin.uz</span></span>
+                </a>
+                <a href="https://t.me" className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white/80 p-4 transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-lg hover:shadow-emerald-900/5">
+                  <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-sky-100 text-sky-700"><MessageCircle className="size-5" /></span>
+                  <span><span className="block text-xs font-bold uppercase tracking-wider text-slate-400">Telegram</span><span className="text-sm font-semibold text-slate-700">Tezkor javob uchun</span></span>
+                </a>
+              </div>
+            </div>
+
+            <form className="rounded-[2rem] bg-[#0c6f56] p-6 text-white shadow-[0_20px_45px_rgba(12,111,86,0.2)] sm:p-8" onSubmit={handleContactSubmit}>
+              <div className="flex items-start justify-between gap-4">
+                <div><h3 className="text-2xl font-bold">Murojaat qoldiring</h3><p className="mt-2 text-sm leading-6 text-emerald-50/75">Jamoamiz siz bilan imkon qadar tez bog‘lanadi.</p></div>
+                <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-white/10 text-orange-200"><Send className="size-5" /></span>
+              </div>
+              {isMessageSent ? (
+                <div className="mt-8 rounded-2xl border border-emerald-200/20 bg-white/10 p-5"><CheckCircle2 className="size-7 text-orange-200" /><p className="mt-3 font-semibold">Murojaatingiz qabul qilindi.</p><p className="mt-1 text-sm leading-6 text-emerald-50/75">E’tiboringiz uchun rahmat. Tez orada siz bilan bog‘lanamiz.</p></div>
+              ) : (
+                <div className="mt-7 grid gap-4">
+                  <label className="grid gap-2 text-sm font-medium text-emerald-50"><span>Ismingiz</span><input required name="name" placeholder="Ismingizni kiriting" className="h-12 rounded-xl border border-white/15 bg-white/10 px-4 text-white outline-none placeholder:text-emerald-100/45 focus:border-orange-200 focus:ring-2 focus:ring-orange-200/20" /></label>
+                  <label className="grid gap-2 text-sm font-medium text-emerald-50"><span>Email yoki telefon</span><input required name="contact" placeholder="Siz bilan qanday bog‘lanamiz?" className="h-12 rounded-xl border border-white/15 bg-white/10 px-4 text-white outline-none placeholder:text-emerald-100/45 focus:border-orange-200 focus:ring-2 focus:ring-orange-200/20" /></label>
+                  <label className="grid gap-2 text-sm font-medium text-emerald-50"><span>Xabaringiz</span><textarea required name="message" rows={4} placeholder="Savol yoki taklifingizni yozing..." className="resize-none rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-white outline-none placeholder:text-emerald-100/45 focus:border-orange-200 focus:ring-2 focus:ring-orange-200/20" /></label>
+                  <button type="submit" className="mt-2 inline-flex items-center justify-center gap-2 rounded-xl bg-orange-400 px-5 py-3.5 font-bold text-[#092f27] transition hover:-translate-y-0.5 hover:bg-orange-300">Xabar yuborish <Send className="size-4" /></button>
+                </div>
+              )}
+            </form>
           </div>
         </section>
       </main>

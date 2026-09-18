@@ -1,16 +1,47 @@
-
+import Logo from '../../assets/logo.png'
 import { useState } from "react"
-import { Leaf, Menu, Search, X } from "lucide-react"
-import { Link } from "react-router-dom"
+import { Menu, Search, X } from "lucide-react"
+import { Link, NavLink, useLocation } from "react-router-dom"
 
 const navLinks = [
-  { label: "Bosh sahifa", href: "/", active: true },
-  { label: "Batafsil", href: "/batafsil", active: false },
-  { label: "Qanday ishlaydi?", href: "/batafsil#qanday-ishlaydi", active: false },
+  { label: "Bosh sahifa", href: "/" },
+  { label: "Batafsil", href: "/batafsil" },
+  { label: "Bog'lanish", href: "/boglanish" },
 ]
+
+const isNavLinkActive = (pathname: string, href: string) => {
+  const cleanPath = pathname.split('#')[0]
+
+  if (href === "/") return cleanPath === "/"
+  if (href === "/batafsil") return cleanPath === "/batafsil" || cleanPath === "/about"
+  if (href === "/boglanish") return cleanPath === "/boglanish" || cleanPath === "/contact"
+
+  return cleanPath === href
+}
+
+const getNavLinkClassName = (isActive: boolean) =>
+  `whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium transition-colors hover:bg-emerald-50 hover:text-emerald-700 ${
+    isActive ? "bg-emerald-50 font-semibold text-emerald-800" : "text-slate-500"
+  }`
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { pathname } = useLocation()
+
+  const handleNavClick = (href: string) => (event: React.MouseEvent<HTMLAnchorElement>) => {
+    const cleanPath = window.location.pathname.split('#')[0]
+
+    if (href === "/batafsil" && cleanPath === "/batafsil") {
+      event.preventDefault()
+      document.getElementById('qanday-ishlaydi')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      return
+    }
+
+    if (href === "/boglanish" && cleanPath === "/boglanish") {
+      event.preventDefault()
+      document.getElementById('murojaat')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
 
   return (
     <header className="sticky top-0 z-50 border-t-[3px] border-slate-800/80 bg-transparent px-3 pt-3 sm:px-5">
@@ -24,9 +55,7 @@ const Navbar = () => {
           className="flex shrink-0 items-center gap-2.5"
           aria-label="Qolmasin bosh sahifasi"
         >
-          <span className="grid size-10 place-items-center rounded-full bg-emerald-800 text-white">
-            <Leaf className="size-5" strokeWidth={2.5} />
-          </span>
+            <img width={'8%'} className='-mt-1' src={Logo} alt="" />
 
           <span className="text-[21px] font-bold tracking-tight text-emerald-800">
             Qol<span className="text-orange-500">masin</span>
@@ -49,7 +78,7 @@ const Navbar = () => {
               type="search"
               placeholder="Mahsulot yoki do'kon qidiring"
               aria-label="Qidiruv"
-              className="glass-control h-11 w-full rounded-full border border-slate-300/90 bg-white/75 pl-11 pr-5 text-sm text-slate-900 outline-none transition placeholder:text-slate-500 focus:border-emerald-600 focus:bg-white/90 focus:ring-4 focus:ring-emerald-600/10 xl:h-12"
+              className="glass-control h-11 w-full rounded-full !border-slate-400 bg-white/75 pl-11 pr-5 text-sm text-slate-900 outline-none transition placeholder:text-slate-500 focus:!border-emerald-600 focus:bg-white/90 focus:ring-4 focus:ring-emerald-600/10 xl:h-12"
             />
           </label>
         </form>
@@ -59,17 +88,15 @@ const Navbar = () => {
           {/* Nav links */}
           <div className="flex items-center gap-3 lg:gap-4 xl:gap-5">
             {navLinks.map((link) => (
-              <Link
+              <NavLink
                 key={link.label}
                 to={link.href}
-                className={`whitespace-nowrap px-1 text-sm font-medium transition-colors hover:text-emerald-700 ${
-                  link.active
-                    ? "font-semibold text-emerald-800"
-                    : "text-slate-500"
-                }`}
+                onClick={handleNavClick(link.href)}
+                aria-current={isNavLinkActive(pathname, link.href) ? "page" : undefined}
+                className={({ isActive }) => getNavLinkClassName(isActive || isNavLinkActive(pathname, link.href))}
               >
                 {link.label}
-              </Link>
+              </NavLink>
             ))}
           </div>
 
@@ -125,23 +152,32 @@ const Navbar = () => {
                 type="search"
                 placeholder="Mahsulot yoki do'kon qidiring"
                 aria-label="Qidiruv"
-                className="glass-control h-11 w-full rounded-full border border-slate-300/90 bg-white/75 pl-11 pr-4 text-sm outline-none focus:border-emerald-600 focus:bg-white/90 focus:ring-4 focus:ring-emerald-600/10"
+                className="glass-control h-11 w-full rounded-full !border-slate-400 bg-white/75 pl-11 pr-4 text-sm outline-none focus:!border-emerald-600 focus:bg-white/90 focus:ring-4 focus:ring-emerald-600/10"
               />
             </label>
           </form>
 
           <div className="mt-4 grid gap-1">
             {navLinks.map((link) => (
-              <Link
+              <NavLink
                 key={link.label}
                 to={link.href}
-                onClick={() => setIsMenuOpen(false)}
-                className="rounded-lg px-3 py-3 text-sm font-medium text-slate-600 hover:bg-emerald-50 hover:text-emerald-700"
+                onClick={() => {
+                  setIsMenuOpen(false)
+                  handleNavClick(link.href)({
+                    preventDefault: () => undefined,
+                  } as React.MouseEvent<HTMLAnchorElement>)
+                }}
+                aria-current={isNavLinkActive(pathname, link.href) ? "page" : undefined}
+                className={({ isActive }) => `rounded-lg px-3 py-3 text-sm font-medium transition-colors hover:bg-emerald-50 hover:text-emerald-700 ${
+                  isActive || isNavLinkActive(pathname, link.href)
+                    ? "bg-emerald-50 font-semibold text-emerald-800"
+                    : "text-slate-600"
+                }`}
               >
                 {link.label}
-              </Link>
+              </NavLink>
             ))}
-
             <div className="mt-3 grid grid-cols-2 gap-3 border-t border-slate-200 pt-4">
               <Link
                 to="/login"

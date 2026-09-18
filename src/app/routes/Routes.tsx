@@ -7,6 +7,11 @@ import { RegisterForm } from '@/features/auth/Pages/Register';
 import Dashboard from '@/pages/public/Dashboard';
 import { ProtectedRoute } from '../guards/ProtectedRoute';
 import About from '@/pages/public/about/About';
+import Contact from '@/pages/public/contact/Contact';
+import ProfilePage from '@/pages/private/profile/pages';
+import Offers from '@/pages/public/offers/Offers';
+import Businesses from '@/pages/public/businesses/Businesses';
+import { useAuthStore } from '@/features/auth/store'; // <--- QO'SHILDI
 
 // ✅ Modullarni import qilish
 import MembersPage from '@/features/business-members/MembersPage';
@@ -24,6 +29,27 @@ const Placeholder = ({ name }: { name: string }) => (
 );
 
 // =====================================================================
+// 🔄 ROLGA QARAB YO'NALTIRISH (YANGI)
+// =====================================================================
+const DashboardRedirect = () => {
+  const { user } = useAuthStore();
+  
+  if (!user) return <Navigate to="/login" replace />;
+
+  // Admin va Moderatorlar uchun
+  if ([UserRole.ADMIN, UserRole.MODERATOR, UserRole.SUPER_ADMIN].includes(user.role)) {
+    return <Navigate to="admin/dashboard" replace />;
+  }
+  
+  // Biznes egalari va xodimlari uchun
+  if ([UserRole.BUSINESS_OWNER, UserRole.BUSINESS_STAFF].includes(user.role)) {
+    return <Navigate to="business/dashboard" replace />;
+  }
+  
+  // Oddiy mijozlar uchun (default)
+  return <Navigate to="dashboard" replace />;
+};
+
 // 🔒 PRIVATE LAYOUT (Navbar + Content)
 // =====================================================================
 const AppLayout = () => (
@@ -44,15 +70,18 @@ const AppRoutes = () => {
       <Route path="/" element={<Dashboard />} />
       <Route path="/about" element={<About />} />
       <Route path="/batafsil" element={<About />} />
+      <Route path="/boglanish" element={<Contact />} />
       
       <Route path="/login" element={<LoginForm />} />
       <Route path="/register" element={<RegisterForm />} />
       <Route path="/forgot-password" element={<Placeholder name="Forgot Password" />} />
       <Route path="/verify-email" element={<Placeholder name="Verify Email" />} />
       
-      <Route path="/businesses" element={<Placeholder name="Businesses List" />} />
+
+      {/* Public business/offers pages */}
+      <Route path="/businesses" element={<Businesses />} />
       <Route path="/businesses/:slug" element={<Placeholder name="Business Details" />} />
-      <Route path="/offers" element={<Placeholder name="Offers List" />} />
+      <Route path="/offers" element={<Offers />} />
       <Route path="/offers/:id" element={<Placeholder name="Offer Details" />} />
 
       {/* ============================================================ */}
@@ -61,8 +90,8 @@ const AppRoutes = () => {
       
       <Route element={<ProtectedRoute />}> 
         <Route path="/app" element={<AppLayout />}>
-          
-          <Route index element={<Navigate to="dashboard" replace />} />
+          {/* ✅ O'ZGARTIRILDI: Rolga qarab avtomatik yo'naltirish */}
+          <Route index element={<DashboardRedirect />} />
 
           {/* ---------- 👤 CUSTOMER ---------- */}
           <Route element={<RoleGuard allowedRoles={[UserRole.CUSTOMER]} />}>
@@ -73,9 +102,10 @@ const AppRoutes = () => {
             <Route path="notifications" element={<Placeholder name="Notifications" />} />
             <Route path="reviews" element={<Placeholder name="My Reviews" />} />
             <Route path="profile" element={<Placeholder name="Profile Settings" />} />
+            <Route path="profile" element={<ProfilePage/>} />
           </Route>
 
-          {/* ---------- 🏢 BUSINESS ---------- */}
+          {/* ----------  BUSINESS ---------- */}
           <Route element={<RoleGuard allowedRoles={[UserRole.BUSINESS_OWNER, UserRole.BUSINESS_STAFF]} />}>
             <Route path="business/dashboard" element={<Placeholder name="Business Analytics" />} />
             <Route path="business/branches" element={<Placeholder name="Branches" />} />
