@@ -46,7 +46,6 @@ const DashboardRedirect = () => {
   return <Navigate to="dashboard" replace />;
 };
 
-// =====================================================================
 // 🔒 PRIVATE LAYOUT (Navbar + Content)
 // =====================================================================
 const AppLayout = () => (
