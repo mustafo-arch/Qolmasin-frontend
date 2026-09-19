@@ -13,16 +13,12 @@ import Offers from '@/pages/public/offers/Offers';
 import Businesses from '@/pages/public/businesses/Businesses';
 import { useAuthStore } from '@/features/auth/store'; // <--- QO'SHILDI
 
-// ✅ Modullarni import qilish
-import MembersPage from '@/features/business-members/MembersPage';
-import ModerationPage from '@/features/businesses/ModerationPage';
-
 // =====================================================================
 // ⚠️ VAQTINCHA PLACEHOLDER
 // =====================================================================
 const Placeholder = ({ name }: { name: string }) => (
   <div className="flex flex-col items-center justify-center h-full min-h-[50vh]">
-    <div className="text-6xl mb-4">🚧</div>
+    <div className="text-6xl mb-4"></div>
     <h2 className="text-2xl font-bold text-gray-800">{name}</h2>
     <p className="mt-2 text-gray-500">Bu sahifa ishlab chiqilmoqda</p>
   </div>
@@ -33,19 +29,19 @@ const Placeholder = ({ name }: { name: string }) => (
 // =====================================================================
 const DashboardRedirect = () => {
   const { user } = useAuthStore();
-  
+
   if (!user) return <Navigate to="/login" replace />;
 
   // Admin va Moderatorlar uchun
-  if ([UserRole.ADMIN, UserRole.MODERATOR, UserRole.SUPER_ADMIN].includes(user.role)) {
+  if ([UserRole.ADMIN, UserRole.MODERATOR, UserRole.SUPER_ADMIN].includes(user.role as UserRole)) {
     return <Navigate to="admin/dashboard" replace />;
   }
-  
+
   // Biznes egalari va xodimlari uchun
-  if ([UserRole.BUSINESS_OWNER, UserRole.BUSINESS_STAFF].includes(user.role)) {
+  if ([UserRole.BUSINESS_OWNER, UserRole.BUSINESS_STAFF].includes(user.role as UserRole)) {
     return <Navigate to="business/dashboard" replace />;
   }
-  
+
   // Oddiy mijozlar uchun (default)
   return <Navigate to="dashboard" replace />;
 };
@@ -71,12 +67,11 @@ const AppRoutes = () => {
       <Route path="/about" element={<About />} />
       <Route path="/batafsil" element={<About />} />
       <Route path="/boglanish" element={<Contact />} />
-      
+
       <Route path="/login" element={<LoginForm />} />
       <Route path="/register" element={<RegisterForm />} />
       <Route path="/forgot-password" element={<Placeholder name="Forgot Password" />} />
       <Route path="/verify-email" element={<Placeholder name="Verify Email" />} />
-      
 
       {/* Public business/offers pages */}
       <Route path="/businesses" element={<Businesses />} />
@@ -85,11 +80,15 @@ const AppRoutes = () => {
       <Route path="/offers/:id" element={<Placeholder name="Offer Details" />} />
 
       {/* ============================================================ */}
-      {/* 🔒 PRIVATE ROUTES (/app prefix ostida)                       */}
+      {/*  PRIVATE ROUTES (/app prefix ostida)                        */}
       {/* ============================================================ */}
-      
-      <Route element={<ProtectedRoute />}> 
+
+      {/* 1-qadam: Himoya qatlami (Token borligini tekshiradi) */}
+      <Route element={<ProtectedRoute />}>
+
+        {/* 2-qadam: Layout qatlami (Navbar ko'rsatadi) */}
         <Route path="/app" element={<AppLayout />}>
+
           {/* ✅ O'ZGARTIRILDI: Rolga qarab avtomatik yo'naltirish */}
           <Route index element={<DashboardRedirect />} />
 
@@ -99,10 +98,7 @@ const AppRoutes = () => {
             <Route path="orders" element={<Placeholder name="My Orders" />} />
             <Route path="favorites" element={<Placeholder name="My Favorites" />} />
             <Route path="alerts" element={<Placeholder name="Deal Alerts" />} />
-            <Route path="notifications" element={<Placeholder name="Notifications" />} />
-            <Route path="reviews" element={<Placeholder name="My Reviews" />} />
-            <Route path="profile" element={<Placeholder name="Profile Settings" />} />
-            <Route path="profile" element={<ProfilePage/>} />
+            <Route path="profile" element={<ProfilePage />} />
           </Route>
 
           {/* ----------  BUSINESS ---------- */}
@@ -112,10 +108,7 @@ const AppRoutes = () => {
             <Route path="business/products" element={<Placeholder name="Products" />} />
             <Route path="business/offers" element={<Placeholder name="Offers Management" />} />
             <Route path="business/orders" element={<Placeholder name="Incoming Orders" />} />
-            
-            {/* ✅ DINAMIK ROUTE: URL dan :businessId ni oladi */}
-            <Route path="business/:businessId/team" element={<MembersPage />} />
-            
+            <Route path="business/team" element={<Placeholder name="Team Members" />} />
             <Route path="business/reviews" element={<Placeholder name="Reviews" />} />
           </Route>
 
@@ -123,17 +116,16 @@ const AppRoutes = () => {
           <Route element={<RoleGuard allowedRoles={[UserRole.MODERATOR, UserRole.ADMIN, UserRole.SUPER_ADMIN]} />}>
             <Route path="admin/dashboard" element={<Placeholder name="Admin Overview" />} />
             <Route path="admin/users" element={<Placeholder name="Users Management" />} />
-            
-            {/* ✅ Business Moderatsiya sahifasi faqat ADMIN uchun */}
-            <Route path="admin/businesses" element={<ModerationPage />} />
-            
+            <Route path="admin/businesses" element={<Placeholder name="Business Moderation" />} />
             <Route path="admin/categories" element={<Placeholder name="Categories" />} />
             <Route path="admin/reports" element={<Placeholder name="Reports" />} />
             <Route path="admin/anomalies" element={<Placeholder name="Price Anomalies" />} />
             <Route path="admin/audit-logs" element={<Placeholder name="Audit Logs" />} />
           </Route>
 
+          {/* Private ichidagi noto'g'ri manzillar uchun */}
           <Route path="*" element={<Navigate to="dashboard" replace />} />
+
         </Route>
       </Route>
 
@@ -159,6 +151,7 @@ const AppRoutes = () => {
           </button>
         </div>
       } />
+
     </Routes>
   );
 };
