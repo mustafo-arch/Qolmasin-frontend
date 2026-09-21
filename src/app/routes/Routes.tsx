@@ -4,6 +4,8 @@ import RoleGuard from '../guards/RoleGuard';
 import { LoginForm } from '@/features/auth/Pages/Login';
 import { UserRole } from '@/features/auth/types';
 import { RegisterForm } from '@/features/auth/Pages/Register';
+import { ForgotPasswordPage } from '@/features/auth/Pages/ForgotPassword';
+import { ResetPasswordPage } from '@/features/auth/Pages/ResetPassword';
 import Dashboard from '@/pages/public/Dashboard';
 import { ProtectedRoute } from '../guards/ProtectedRoute';
 import About from '@/pages/public/about/About';
@@ -33,12 +35,12 @@ const DashboardRedirect = () => {
   if (!user) return <Navigate to="/login" replace />;
 
   // Admin va Moderatorlar uchun
-  if ([UserRole.ADMIN, UserRole.MODERATOR, UserRole.SUPER_ADMIN].includes(user.role)) {
+  if (([UserRole.ADMIN, UserRole.MODERATOR, UserRole.SUPER_ADMIN] as UserRole[]).includes(user.role)) {
     return <Navigate to="admin/dashboard" replace />;
   }
   
   // Biznes egalari va xodimlari uchun
-  if ([UserRole.BUSINESS_OWNER, UserRole.BUSINESS_STAFF].includes(user.role)) {
+  if (([UserRole.BUSINESS_OWNER, UserRole.BUSINESS_STAFF] as UserRole[]).includes(user.role)) {
     return <Navigate to="business/dashboard" replace />;
   }
   
@@ -70,7 +72,8 @@ const AppRoutes = () => {
       
       <Route path="/login" element={<LoginForm />} />
       <Route path="/register" element={<RegisterForm />} />
-      <Route path="/forgot-password" element={<Placeholder name="Forgot Password" />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
       <Route path="/verify-email" element={<Placeholder name="Verify Email" />} />
       
       {/* Public business/offers pages */}

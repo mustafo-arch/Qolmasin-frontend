@@ -10,6 +10,7 @@ import {
 
 import { UserRole } from '@/features/auth/types';
 import { useAuthStore } from '@/features/auth/store';
+import Logo from '@/assets/logo.png';
 
 // Menyu konfiguratsiyasi (o'zgarmas)
 const menuConfig = {
@@ -89,13 +90,14 @@ export const Navbar: React.FC = () => {
 
   return (
     <>
-      <header className="w-full bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 shadow-sm select-none transition-colors duration-200">
-        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
+      <header className="sticky top-0 z-50 border-t-[3px] border-slate-800/80 bg-transparent px-3 pt-3 sm:px-5 select-none">
+        <div className="glass-panel mx-auto flex h-16 w-full max-w-[1190px] items-center justify-between gap-4 rounded-[2rem] px-4 lg:gap-5 lg:px-7 xl:h-20 xl:max-w-[92%] xl:px-8">
           
           {/* Logo */}
           <div className="flex items-center">
-            <Link to="/" className="flex items-center gap-1">
-              <span className="text-2xl font-black text-[#005B41] dark:text-emerald-400 tracking-tight">
+            <Link to="/" className="flex shrink-0 items-center gap-2.5">
+              <img src={Logo} width={32} height={32} className="size-8 object-contain" alt="Qolmasin" />
+              <span className="text-[21px] font-bold tracking-tight text-emerald-800 dark:text-emerald-400">
                 Qol<span className="text-amber-500">masin</span>
               </span>
             </Link>
@@ -129,7 +131,7 @@ export const Navbar: React.FC = () => {
             <button
               onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
               disabled={isLoading}
-              className="flex items-center gap-3 py-1.5 px-3 bg-emerald-50/40 hover:bg-emerald-50 border border-emerald-200/60 dark:bg-gray-800/60 dark:hover:bg-gray-800 dark:border-gray-700 rounded-full transition-all duration-200 cursor-pointer outline-none disabled:opacity-50"
+              className="flex items-center gap-3 rounded-full border border-slate-300/80 bg-white/75 px-3 py-1.5 transition-all duration-200 hover:border-emerald-700 hover:bg-white cursor-pointer outline-none disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800/60 dark:hover:bg-gray-800"
             >
               {/* Avatar / Initial */}
               <div className="w-8 h-8 rounded-full bg-[#005B41] text-white flex items-center justify-center font-bold text-xs shadow-sm">
