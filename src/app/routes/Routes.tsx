@@ -29,19 +29,19 @@ const Placeholder = ({ name }: { name: string }) => (
 // =====================================================================
 const DashboardRedirect = () => {
   const { user } = useAuthStore();
-  
+
   if (!user) return <Navigate to="/login" replace />;
 
   // Admin va Moderatorlar uchun
-  if ([UserRole.ADMIN, UserRole.MODERATOR, UserRole.SUPER_ADMIN].includes(user.role)) {
+  if ([UserRole.ADMIN, UserRole.MODERATOR, UserRole.SUPER_ADMIN].includes(user.role as UserRole)) {
     return <Navigate to="admin/dashboard" replace />;
   }
-  
+
   // Biznes egalari va xodimlari uchun
-  if ([UserRole.BUSINESS_OWNER, UserRole.BUSINESS_STAFF].includes(user.role)) {
+  if ([UserRole.BUSINESS_OWNER, UserRole.BUSINESS_STAFF].includes(user.role as UserRole)) {
     return <Navigate to="business/dashboard" replace />;
   }
-  
+
   // Oddiy mijozlar uchun (default)
   return <Navigate to="dashboard" replace />;
 };
@@ -67,12 +67,12 @@ const AppRoutes = () => {
       <Route path="/about" element={<About />} />
       <Route path="/batafsil" element={<About />} />
       <Route path="/boglanish" element={<Contact />} />
-      
+
       <Route path="/login" element={<LoginForm />} />
       <Route path="/register" element={<RegisterForm />} />
       <Route path="/forgot-password" element={<Placeholder name="Forgot Password" />} />
       <Route path="/verify-email" element={<Placeholder name="Verify Email" />} />
-      
+
       {/* Public business/offers pages */}
       <Route path="/businesses" element={<Businesses />} />
       <Route path="/businesses/:slug" element={<Placeholder name="Business Details" />} />
@@ -82,13 +82,13 @@ const AppRoutes = () => {
       {/* ============================================================ */}
       {/*  PRIVATE ROUTES (/app prefix ostida)                        */}
       {/* ============================================================ */}
-      
+
       {/* 1-qadam: Himoya qatlami (Token borligini tekshiradi) */}
-      <Route element={<ProtectedRoute />}> 
-        
+      <Route element={<ProtectedRoute />}>
+
         {/* 2-qadam: Layout qatlami (Navbar ko'rsatadi) */}
         <Route path="/app" element={<AppLayout />}>
-          
+
           {/* ✅ O'ZGARTIRILDI: Rolga qarab avtomatik yo'naltirish */}
           <Route index element={<DashboardRedirect />} />
 
@@ -98,7 +98,7 @@ const AppRoutes = () => {
             <Route path="orders" element={<Placeholder name="My Orders" />} />
             <Route path="favorites" element={<Placeholder name="My Favorites" />} />
             <Route path="alerts" element={<Placeholder name="Deal Alerts" />} />
-            <Route path="profile" element={<ProfilePage/>} />
+            <Route path="profile" element={<ProfilePage />} />
           </Route>
 
           {/* ----------  BUSINESS ---------- */}
