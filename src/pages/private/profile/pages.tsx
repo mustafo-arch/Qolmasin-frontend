@@ -1,11 +1,13 @@
 // src/pages/private/profile/ProfilePage.tsx
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuthStore } from '@/features/auth/store';
-import { User, Mail, Phone, Shield, Calendar, CheckCircle2, XCircle, Clock } from 'lucide-react';
+import { User, Mail, Phone, Shield, Calendar, CheckCircle2, XCircle, Clock, KeyRound } from 'lucide-react';
+import { ChangePasswordModal } from './components/ChangePasswordModal';
 
 const ProfilePage: React.FC = () => {
   const { user, isLoading } = useAuthStore();
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
   if (isLoading) {
     return (
@@ -133,19 +135,25 @@ const ProfilePage: React.FC = () => {
           <div className="mt-10 pt-6 border-t border-gray-100 dark:border-gray-800">
             <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Qo'shimcha sozlamalar</h3>
             <div className="flex flex-wrap gap-3">
-              <button className="px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-xl transition-colors">
+              <button 
+                type="button"
+                onClick={() => setIsPasswordModalOpen(true)}
+                className="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 text-sm font-medium rounded-xl transition-all shadow-sm active:scale-[0.98]"
+              >
+                <KeyRound className="size-4 text-emerald-600 dark:text-emerald-400" />
                 Parolni o'zgartirish
               </button>
-              {!user.emailVerified && (
-                <button className="px-4 py-2 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-900/20 dark:hover:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 text-sm font-medium rounded-xl transition-colors">
-                  Emailni tasdiqlash
-                </button>
-              )}
             </div>
           </div>
 
         </div>
       </div>
+
+      {/* Parolni o'zgartirish modali */}
+      <ChangePasswordModal 
+        isOpen={isPasswordModalOpen} 
+        onClose={() => setIsPasswordModalOpen(false)} 
+      />
     </div>
   );
 };

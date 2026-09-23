@@ -7,6 +7,7 @@ import type {
   ForgotPasswordDto,
   ResendVerificationDto,
   ResetPasswordDto,
+  ChangePasswordDto,
   VerifyEmailDto,
   AuthResult,
   PublicUser,
@@ -108,6 +109,9 @@ export const authEndpoints = {
   
   resetPassword: (data: ResetPasswordDto) => 
     authApi.post('/reset-password', data),
+
+  changePassword: (data: ChangePasswordDto) => 
+    authApi.post<{ message: string }>('/change-password', data),
   
   getCurrentUser: () => 
     authApi.get<PublicUser>('/me'),

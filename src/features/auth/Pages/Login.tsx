@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { useAuthStore } from '../store';
+import { useAuthStore } from '../store'; // Store yo'liningizga qarab tekshiring
 import type { LoginDto } from '../types';
-import { UserRole } from '@/features/auth/types'; // <--- QO'SHILDI: Rollarni tekshirish uchun
+import { UserRole } from '@/features/auth/types'; 
 
 export const LoginForm: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  // user ni ham store'dan olamiz, chunki login() dan keyin u yangilanadi
+  
+  // Zustand store'dan zarur funksiyalar va holatlar
   const { login, isLoading, error, clearError, user } = useAuthStore();
 
   const [formData, setFormData] = useState<LoginDto>({
@@ -23,14 +24,12 @@ export const LoginForm: React.FC = () => {
     try {
       await login(formData);
       
-      // YANGI MANTIQ: Rolga qarab yo'naltirish
+      // Rolga qarab yo'naltirish mantig'i
       const previousPath = (location.state as any)?.from?.pathname;
 
       if (previousPath) {
-        // Agar foydalanuvchi himoyalangan sahifadan login sahifasiga tushib qolgan bo'lsa, o'sha yerga qaytarish
         navigate(previousPath, { replace: true });
       } else {
-        // Aks holda, rolga qarab default dashboardga yo'naltirish
         if (user?.role === UserRole.ADMIN || 
             user?.role === UserRole.MODERATOR || 
             user?.role === UserRole.SUPER_ADMIN) {
@@ -45,18 +44,20 @@ export const LoginForm: React.FC = () => {
       }
 
     } catch {
-      // Xato allaqachon store da saqlangan
+      // Xato allaqachon store'da saqlangan va render qilinmoqda
     }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    // Foydalanuvchi yozayotganda eski xatolikni tozalash yaxshi UX
+    if (error) clearError();
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#FDFBF7] py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      {/* Tepa chap burchakdagi yumaloq bosh sahifaga qaytish tugmasi */}
+      {/* Tepa chap burchakdagi orqaga qaytish tugmasi */}
       <Link
         to="/"
         className="absolute top-6 left-6 z-20 flex items-center justify-center w-11 h-11 bg-white hover:bg-emerald-50 text-gray-700 hover:text-emerald-800 rounded-full shadow-md shadow-emerald-900/5 border border-emerald-100 transition-all duration-200"
@@ -72,6 +73,7 @@ export const LoginForm: React.FC = () => {
       <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-emerald-50 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-md w-full space-y-8 bg-white p-8 sm:p-10 rounded-3xl shadow-xl shadow-emerald-900/5 border border-emerald-50 relative z-10">
+        
         {/* Sarlavha qismi */}
         <div className="text-center">
           <Link to="/" className="inline-block mb-2">
@@ -91,54 +93,85 @@ export const LoginForm: React.FC = () => {
         </div>
 
         <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
+          
+          {/* Global Xatolik ko'rsatkichi */}
           {error && (
-            <div className="rounded-2xl bg-red-50 p-4 border border-red-100">
-              <div className="text-sm text-red-700 font-medium text-center">{error}</div>
+            <div className="rounded-2xl bg-red-50 p-4 border border-red-100 animate-shake">
+              <div className="flex items-start gap-3">
+                <svg className="w-5 h-5 text-red-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div className="text-sm text-red-700 font-medium">{error}</div>
+              </div>
             </div>
           )}
 
           <div className="space-y-4">
+            {/* Identifier (Telefon/Email) */}
             <div>
               <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5 ml-1">
                 Telefon raqami yoki email
               </label>
-              <input
-                name="identifier"
-                type="text"
-                required
-                value={formData.identifier}
-                onChange={handleChange}
-                placeholder="misol@email.com yoki +998..."
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:bg-white transition-all duration-200"
-              />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+                <input
+                  name="identifier"
+                  type="text"
+                  required
+                  value={formData.identifier}
+                  onChange={handleChange}
+                  placeholder="misol@email.com yoki +998..."
+                  autoComplete="username"
+                  className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent focus:bg-white transition-all duration-200"
+                />
+              </div>
             </div>
 
+            {/* Parol */}
             <div>
-              <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5 ml-1">
-                Parol
-              </label>
-              <input
-                name="password"
-                type="password"
-                required
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="••••••••"
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:bg-white transition-all duration-200"
-              />
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider ml-1">
+                  Parol
+                </label>
+                
+                {/* MUHIM O'ZGARISH: Bu yerda /forgot-password ga havola berildi */}
+                <Link 
+                  to="/forgot-password" 
+                  className="text-xs font-semibold text-emerald-700 hover:text-emerald-600 hover:underline transition-colors"
+                >
+                  Parolni unutdingizmi?
+                </Link>
+              </div>
+              
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                </div>
+                <input
+                  name="password"
+                  type="password"
+                  required
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="••••••••"
+                  autoComplete="current-password"
+                  className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent focus:bg-white transition-all duration-200"
+                />
+              </div>
             </div>
           </div>
 
-          <div className="flex items-center justify-end">
-            <Link to="/forgot-password" className="text-sm font-semibold text-emerald-700 hover:text-emerald-600 transition-colors">
-              Parolni unutdingizmi?
-            </Link>
-          </div>
-
+          {/* Kirish tugmasi */}
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full flex justify-center items-center py-3.5 px-4 border border-transparent text-sm font-bold rounded-xl text-white bg-emerald-800 hover:bg-emerald-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-600 disabled:opacity-50 transition-all duration-200 shadow-lg shadow-emerald-900/10 cursor-pointer"
+            className="w-full flex justify-center items-center py-3.5 px-4 border border-transparent text-sm font-bold rounded-xl text-white bg-emerald-800 hover:bg-emerald-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg shadow-emerald-900/10 cursor-pointer group"
           >
             {isLoading ? (
               <span className="flex items-center gap-2">
@@ -146,14 +179,20 @@ export const LoginForm: React.FC = () => {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                 </svg>
-                Kirilmoqda...
+                Tekshirilmoqda...
               </span>
             ) : (
-              'Kirish'
+              <>
+                Kirish
+                <svg className="ml-2 w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </>
             )}
           </button>
         </form>
 
+        {/* Ajratgich */}
         <div className="relative my-6">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-200" />
@@ -163,6 +202,7 @@ export const LoginForm: React.FC = () => {
           </div>
         </div>
 
+        {/* Google Login (Agar kerak bo'lsa) */}
         <button
           type="button"
           className="w-full flex items-center justify-center gap-3 py-3 px-4 border border-gray-200 rounded-xl shadow-sm text-sm font-semibold text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-600 transition-all duration-200 cursor-pointer"
@@ -175,6 +215,16 @@ export const LoginForm: React.FC = () => {
           </svg>
           Google orqali kirish
         </button>
+        
+        {/* Pastki qismdagi yordam matni */}
+        <div className="text-center mt-6">
+           <p className="text-xs text-gray-500">
+             Muammo bo'lsa?{' '}
+             <a href="mailto:support@qolmasin.uz" className="text-emerald-600 hover:text-emerald-800 underline decoration-dotted underline-offset-2">
+               Support bilan bog'laning
+             </a>
+           </p>
+        </div>
       </div>
     </div>
   );
